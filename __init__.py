@@ -11,7 +11,7 @@ def db_ex(cmd):
 
 def db_setup():
     db_ex("DROP TABLE IF EXISTS \"user\"")
-    db_ex("DROP TABLE IF EXISTS \"transcations\"")
+    db_ex("DROP TABLE IF EXISTS \"transaction\"")
     db_ex("""CREATE TABLE IF NOT EXISTS  'user'(
         id INTEGER PRIMARY KEY NOT NULL,
         username VARCHAR,
