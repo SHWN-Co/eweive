@@ -18,11 +18,11 @@ def db_setup():
         password VARCHAR,
         phone_number VARCHAR,
         cc_number VARCHAR,
-        email VARCHAR,);""")
+        email VARCHAR);""")
     db_ex("""CREATE TABLE IF NOT EXISTS 'transaction'(
         id INTEGER PRIMARY KEY NOT NULL,
         transaction_number VARCHAR,
         buyer_id VARCHAR,
         seller_id, VARCHAR
         price VARCHAR,
-        time TIMESTAMP,);""")
+        time TIMESTAMP);""")
