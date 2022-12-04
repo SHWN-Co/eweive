@@ -1,0 +1,32 @@
+.navbar {
+    --bs-navbar-padding-x: 15px;
+}
+
+.input-group>.form-control, .input-group>.form-floating, .input-group>.form-select {
+    width: 800px;
+}
+
+.c1 {
+    background-color: #90C9FD;
+    max-width: 100%;
+    color: #031042;
+    padding: 20px 40px 20px 50px;
+    max-height: 400px;
+}
+
+.holiday-images {
+    width: 280px;
+    height: auto;
+}
+
+.holiday-images2 {
+    height: 250px;
+    padding-top: 40px;
+}
+.slogan-items {
+    padding-top: 10px;
+}
+
+.col-3 {
+    height: 100%;
+}
