@@ -17,13 +17,15 @@ def db_setup():
             username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             user_type TEXT NOT NULL,
+            email TEXT NOT NULL,
             phone_number TEXT,
             cc_number TEXT,
-            email TEXT NOT NULL); """)
+            home_address TEXT
+        ); """)
     # create first superuser
     db_ex('''
         INSERT INTO USERS(id, username, password, user_type, email) 
-        VALUES('8685', 'Shwn', '173897', 'SU', 'sudevs@gmail.com')
+        VALUES('8685', 'shwn', '173897', 'SU', 'sudevs@gmail.com')
         ''')
 
 db_setup()
