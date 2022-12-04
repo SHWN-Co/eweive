@@ -30,9 +30,9 @@ def db_setup():
         item_id INTEGER NOT NULL,
         buyer_id INTEGER NOT NULL UNIQUE,
         seller_id INTEGER NOT NULL UNIQUE, 
-        highest_bid INTEGER NOT NULL
+        highest_bid INTEGER NOT NULL,
        
-        FOREIGN KEY(buyer_id) REFERENCES USERS (id)
+        FOREIGN KEY(buyer_id) REFERENCES USERS (id),
         FOREIGN KEY(seller_id) REFERENCES USERS (id)
        ); """)
 #figure out why foreign key is running into trouble ^
