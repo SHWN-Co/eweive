@@ -6,9 +6,8 @@ app = Flask(__name__)
 # use python -m flask to run the app in VSCode
 @app.route("/")
 def home():
-    return "Hello, Flask!"
+    return render_template("homepage.html")
 
-@app.route("/homepage/")
 @app.route("/homepage/<name>") 
 def hello_there(name = None):
     return render_template(
