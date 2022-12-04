@@ -27,5 +27,3 @@ def db_setup():
         INSERT INTO USERS(id, username, password, user_type, email) 
         VALUES('8685', 'shwn', '173897', 'SU', 'sudevs@gmail.com')
         ''')
-
-db_setup()
