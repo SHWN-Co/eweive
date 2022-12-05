@@ -19,7 +19,7 @@
         <form class="form-inline">
             <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
             </div>
         </form>
         <div>
@@ -30,12 +30,14 @@
     
 
     <!-- Insert form here -->
-    <form class = "form-login" method = "POST" action = "/login">
-        <h2 class="text-center pt-5">Login</h2>
+    <h2 class="text-center pt-5">Login</h2>
+    <form class = "form-login signlogform" method = "POST" action = "/login">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
+        <br>
         {{ wtf.form_field(form.password) }}
-        <button class = "btn" type="submit"> Login </button> 
+        <br>
+        <button class = "btn btn-primary" type="submit"> Login </button> 
     </form>
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

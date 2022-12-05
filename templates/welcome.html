@@ -14,24 +14,21 @@
 </head>
 
 <body>
-    <!-- {%if name %}
-    <strong>Hello there, {{ name }}!</strong> It's {{ date.strftime("%A, %d %B, %Y at %X") }}.
-    {% else %}
-    What's your name? Provide it after /hello/ in the URL.
-    {% endif %} -->
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand pr-4" href="#">EWEIVE</a>
         <form class="form-inline">
             <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
             </div>
         </form>
         <div>
-            <a href="{{ url_for('OUApplication') }}" class="btn btn-primary">Apply to be an OU</a>
-            <a href = "{{ url_for('login') }}" type="button" class="btn btn-outline-primary">Sign in</a>
+            <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
         </div>
     </nav>
+    {%if name %}
+    <strong>Hello there, {{ name }}!</strong> It's {{ date.strftime("%A, %d %B, %Y at %X") }}.
+    {% endif %}
     <div class="container c1">
         <div class="row">
             <div class="col-3">
