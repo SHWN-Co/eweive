@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-{% import "bootstrap/wtf.html" as wtf %}
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,27 +17,51 @@
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand pr-4" href="{{ url_for('home') }}">EWEIVE</a>
         <form class="form-inline">
-            <div class="input-group">
+            <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
             </div>
         </form>
         <div>
             <a href="{{ url_for('OUApplication') }}" class="btn btn-primary">Apply to be an OU</a>
-            <a href = "{{ url_for('login') }}" type="button" class="btn btn-outline-primary">Sign in</a>
+            <button type="button" class="btn btn-outline-primary">Sign in</button>
         </div>
     </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-4">
+                <img class="itemImage" src={{image_address}}>
+            </div>
+            <div class="col-8">
+                <h2><strong>{{ item_title }}</strong></h2>
+                <p>Sold by {{ seller_id }}</p>
+                <p>Time left: <strong>{{ end_date }}</strong></p>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-2">
+                            Current Bid:
+                        </div>
+                        <div class="col-6">
+                            <h3>{{ highest_bid }}</h3>
+                            <form class="form-inline">
+                                <div class="input-group bidBar">
+                                    <input class="form-control mr-sm-2" type="search" placeholder="Bid Amount" aria-label="BidAmount">
+                                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Place Bid</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <h4>Description:</h4>
+                <p>{{item_description}}</p>
+                <p>Does this item look suspicious? Report it <a class="text-danger" href="{{ url_for('reportPage') }}">here.</a></p>
+            </div>
+        </div>
+    </div>
 
     <!-- Insert form here -->
-    <form class = "form-signup" method = "POST" action = "/OUApplication">
-        <h2 class="text-center pt-5">Apply to be an Ordinary User</h2>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.username) }}
-        {{ wtf.form_field(form.password) }}
-        {{ wtf.form_field(form.email) }}
-        {{ wtf.form_field(form.phone) }}
-        <button class = "btn" type="submit"> Apply </button> 
-    </form>
+
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

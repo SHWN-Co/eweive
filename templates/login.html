@@ -27,16 +27,15 @@
             <a href = "{{ url_for('login') }}" type="button" class="btn btn-outline-primary">Sign in</a>
         </div>
     </nav>
+    
 
     <!-- Insert form here -->
-    <form class = "form-signup" method = "POST" action = "/OUApplication">
-        <h2 class="text-center pt-5">Apply to be an Ordinary User</h2>
+    <form class = "form-login" method = "POST" action = "/login">
+        <h2 class="text-center pt-5">Login</h2>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.password) }}
-        {{ wtf.form_field(form.email) }}
-        {{ wtf.form_field(form.phone) }}
-        <button class = "btn" type="submit"> Apply </button> 
+        <button class = "btn" type="submit"> Login </button> 
     </form>
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

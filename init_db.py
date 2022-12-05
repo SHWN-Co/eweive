@@ -140,4 +140,3 @@ def db_setup():
         VALUES('4522','1', 'too small' )
         ''')
 
-db_setup()
