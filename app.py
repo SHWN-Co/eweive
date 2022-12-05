@@ -52,13 +52,13 @@ class Items(db.Model, UserMixin):
     image = db.Column(db.String(200), nullable=False)
     key_words = db.Column(db.String(200), nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
-    time_limit = db.Column(db.datetime, )
+    # time_limit = db.Column(db.datetime)
 
  
 class Transactions(db.Model, UserMixin):
     __tablename__= 'TRANSACTIONS'
     id = db.Column(db.Integer, primary_key = True)
-    date_and_time = db.Column(db.datetime, nullable=False)
+    # date_and_time = db.Column(db.datetime, nullable=False)
     item_id = db.Column(db.Integer,ForeignKey("ITEMS.id"), nullable=False)
     buyer_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
     seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
@@ -67,7 +67,7 @@ class Transactions(db.Model, UserMixin):
 class Bid(db.Model, UserMixin):
     __tablename__= 'Bid'
     id = db.Column(db.Integer, primary_key = True)
-    item_id = db.Column(db.Integer, ForeignKey("ITEMS.id") nullable=False)
+    item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
 
 
