@@ -74,6 +74,19 @@ def homepage():
         date=datetime.now()
     )
 
+@app.route("/item")
+def itemPage():
+    return render_template(
+        "item.html",
+        image_address="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
+        item_title="Vincent Van Gogh Replica Painting Sunflowers",
+        seller_id="342",
+        end_date="December 14, 2022",
+        highest_bid="$100.00",
+        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.")
 
-
-
+@app.route("/report-item")
+def reportPage():
+    return render_template(
+        "reportPage.html"
+    )
