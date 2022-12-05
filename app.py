@@ -45,14 +45,14 @@ class OUApp(db.Model):
         return self.id
  
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
  
 class RegisterForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=6, max=80)])
-    email = StringField('email', validators=[InputRequired(), Length(min = 8, max = 80)])
-    phone = StringField('phone', validators=[InputRequired(), Length(min=9, max = 20)])
+    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
+    email = StringField('Email', validators=[InputRequired(), Length(min = 8, max = 80)])
+    phone = StringField('Phone Number', validators=[InputRequired(), Length(min=9, max = 20)])
 
 app.app_context().push()
 
@@ -105,7 +105,7 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route("/item")
+@app.route("/item", methods = ['GET','POST'])
 def itemPage():
     return render_template(
         "item.html",
@@ -114,10 +114,20 @@ def itemPage():
         seller_id="342",
         end_date="December 14, 2022",
         highest_bid="$100.00",
+        highest_bid_constraint="$101.00",
         item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.")
 
-@app.route("/report-item")
+@app.route("/report-item", methods = ['GET', 'POST'])
 def reportPage():
     return render_template(
         "reportPage.html"
+    )
+
+@app.route("/search", methods = ['GET', 'POST'])
+def searchPage():
+    return render_template(
+        "search.html",
+        image="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
+        item_title="Vincent Van Gogh Replica Painting Sunflowers",
+        highest_bid="$100.00"
     )
