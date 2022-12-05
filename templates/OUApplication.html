@@ -17,7 +17,7 @@
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand pr-4" href="{{ url_for('home') }}">EWEIVE</a>
         <form class="form-inline">
-            <div class="input-group">
+            <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
             </div>
@@ -36,7 +36,7 @@
         {{ wtf.form_field(form.password) }}
         {{ wtf.form_field(form.email) }}
         {{ wtf.form_field(form.phone) }}
-        <button class = "btn" type="submit"> Apply </button> 
+        <button class = "btn btn-primary" type="submit"> Apply </button> 
     </form>
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
