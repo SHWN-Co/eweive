@@ -60,19 +60,19 @@ def db_setup():
         ''')
     
     # add first item transaction
-db_ex('''
+    db_ex('''
     INSERT INTO TRANSACTIONS(date_and_time, item_id, buyer_id, seller_id, highest_bid)
     VALUES('2022-12-03 12:45:34', '5556', '8790', '3345', '56')
     ''')
-db_ex('''
+    db_ex('''
     INSERT INTO TRANSACTIONS(date_and_time, item_id, buyer_id, seller_id, highest_bid)
     VALUES('2022-12-04 1:30:09', '8834', '7329', '1123', '310')
     ''')
 
-db_ex('''
+    db_ex('''
     INSERT INTO OU_APPLICATIONS(status, app_id, user_type, first_name, last_name, email, password, annual_income)
     VALUES('pending', '112', 'GUEST USER', 'JIE', 'WIE', 'jwei@cuny.com','secur!ty', '1000000')
     ''')
-
+db_setup()
 
 
