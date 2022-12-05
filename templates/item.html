@@ -19,7 +19,7 @@
         <form class="form-inline">
             <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
             </div>
         </form>
         <div>
@@ -49,10 +49,10 @@
                                     <button class="btn btn-primary my-2 my-sm-0" type="submit">Place Bid</button>
                                 </div>
                             </form>
+                            <p><small>Enter US {{ highest_bid_constraint }} or more</small></p>
                         </div>
                     </div>
                 </div>
-                <br>
                 <h4>Description:</h4>
                 <p>{{item_description}}</p>
                 <p>Does this item look suspicious? Report it <a class="text-danger" href="{{ url_for('reportPage') }}">here.</a></p>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 {% import "bootstrap/wtf.html" as wtf %}
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,24 +20,28 @@
         <form class="form-inline">
             <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
             </div>
         </form>
         <div>
             <a href="{{ url_for('OUApplication') }}" class="btn btn-primary">Apply to be an OU</a>
-            <a href = "{{ url_for('login') }}" type="button" class="btn btn-outline-primary">Sign in</a>
+            <a href="{{ url_for('login') }}" type="button" class="btn btn-outline-primary">Sign in</a>
         </div>
     </nav>
+    <h2 class="text-center pt-5">Apply to be an Ordinary User</h2>
 
     <!-- Insert form here -->
-    <form class = "form-signup" method = "POST" action = "/OUApplication">
-        <h2 class="text-center pt-5">Apply to be an Ordinary User</h2>
+    <form class="form-signup signlogform" method="POST" action="/OUApplication">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
+        <br>
         {{ wtf.form_field(form.password) }}
+        <br>
         {{ wtf.form_field(form.email) }}
+        <br>
         {{ wtf.form_field(form.phone) }}
-        <button class = "btn btn-primary" type="submit"> Apply </button> 
+        <br>
+        <button class="btn btn-primary" type="submit"> Apply </button>
     </form>
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
