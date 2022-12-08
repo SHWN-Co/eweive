@@ -45,6 +45,15 @@ class OUApp(db.Model):
     def get_id(self):
         return self.id
 
+class Process_Items(db.Model, UserMixin):
+    __tablename__='PROCESS_ITEMS'
+    id=db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(100), nullable=False)
+    image = db.Column(db.String(200), nullable=False)
+    key_words = db.Column(db.String(200), nullable=False )
+    seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
+    time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
+
 class Items(db.Model, UserMixin):
     __tablename__='ITEMS'
     id = db.Column(db.Integer, primary_key = True)
