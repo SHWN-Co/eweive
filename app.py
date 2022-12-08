@@ -91,7 +91,7 @@ class Police_Reports(db.Model, UserMixin):
     report_id=db.Column(db.Integer, ForeignKey("Sus_Reports.id"), nullable=False)
     item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
 
-class USERS_ITEMS_BLOCKLIST(db.Model, UserMixin):
+class Users_Items_Blocklist(db.Model, UserMixin):
     __tablename__='USERS_ITEMS_BLOCKLIST'
     id=db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
