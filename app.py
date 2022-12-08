@@ -80,12 +80,21 @@ class Bid(db.Model, UserMixin):
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
 
+
+
+class Give_Rating(db.Model, UserMixin):
+    __tablename__= 'RATINGS'
+    id= db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
+    
+
 class Complaints(db.Model, UserMixin):
     __tablename__='COMPLAINTS'
     id= db.Column(db.Integer, primary_key = True)
     user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
     complaint_cnt=db.Column(db.Integer, nullable=False)
-    reason=db.Column(db.String, nullable=False)
+    reason=db.Column(db.Text, nullable=False)
 
 class Sus_Reports(db.Model, UserMixin):
     __tablename__='Sus_Reports'
