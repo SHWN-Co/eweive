@@ -215,6 +215,14 @@ def reportPage():
         "reportPage.html"
     )
 
+@app.route("/account", methods = ['GET', 'POST'])
+@login_required
+def accountPage():
+    return render_template(
+        "accountPage.html",
+        name=current_user.username,
+    )
+
 @app.route("/search", methods = ['GET', 'POST'])
 def searchPage():
     return render_template(
