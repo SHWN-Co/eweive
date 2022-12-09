@@ -1,5 +1,6 @@
+import enum
 from flask import Flask, render_template, request, url_for, redirect, session, flash
-from sqlalchemy import ForeignKey # (once we start creating html pages)
+from sqlalchemy import DateTime, Enum, ForeignKey, func, Integer # (once we start creating html pages)
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -45,31 +46,94 @@ class OUApp(db.Model):
     def get_id(self):
         return self.id
 
+class Process_Items(db.Model, UserMixin):
+    __tablename__='PROCESS_ITEMS'
+    id=db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.Text, nullable=False)
+    image = db.Column(db.Text, nullable=False)
+    key_words = db.Column(db.Text, nullable=False )
+    seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
+    time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
+
 class Items(db.Model, UserMixin):
     __tablename__='ITEMS'
     id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String(200), nullable=False)
-    key_words = db.Column(db.String(200), nullable=False )
+    title = db.Column(db.Text, nullable=False)
+    image = db.Column(db.Text, nullable=False)
+    key_words = db.Column(db.Text, nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
-    # time_limit = db.Column(db.datetime)
+    time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
+    highest_bid = db.Column(db.Integer, nullable=False)
 
  
 class Transactions(db.Model, UserMixin):
     __tablename__= 'TRANSACTIONS'
     id = db.Column(db.Integer, primary_key = True)
-    # date_and_time = db.Column(db.datetime, nullable=False)
+    date_and_time = db.Column(DateTime(timezone=True), server_default=func.now())
     item_id = db.Column(db.Integer,ForeignKey("ITEMS.id"), nullable=False)
     buyer_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
     seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
     highest_bid = db.Column(db.Integer, nullable=False)
 
 class Bid(db.Model, UserMixin):
-    __tablename__= 'Bid'
+    __tablename__= 'BID'
     id = db.Column(db.Integer, primary_key = True)
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
 
+class Rate(enum.Enum):
+    one = 1 
+    two = 2
+    three = 3
+    four = 4
+    five = 5 
+
+
+class Give_Rating(db.Model, UserMixin):
+    __tablename__= 'RATINGS'
+    id= db.Column(db.Integer, primary_key=True)
+    trans_id=db.Column(db.Integer, ForeignKey("Transactions.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
+    rating = db.Column(Enum(Rate), nullable=False)
+    
+
+class Complaints(db.Model, UserMixin):
+    __tablename__='COMPLAINTS'
+    id= db.Column(db.Integer, primary_key = True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    complaint_cnt=db.Column(db.Integer, nullable=False)
+    reason=db.Column(db.Text, nullable=False)
+
+class Sus_Reports(db.Model, UserMixin):
+    __tablename__='SUS_REPORTS'
+    id=db.Column(db.Integer, primary_key=True)
+    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+
+class Sus_Items(db.Model, UserMixin):
+    __tablename__='SUS_ITEMS'
+    id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+
+class Police_Reports(db.Model, UserMixin):
+    __tablename__='POLICE_REPORTS'
+    id=db.Column(db.Integer, primary_key=True)
+    date_and_time=db.Column(DateTime(timezone=True), server_default=func.now())
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    report_id=db.Column(db.Integer, ForeignKey("Sus_Reports.id"), nullable=False)
+    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+
+class Users_Items_Blocklist(db.Model, UserMixin):
+    __tablename__='USERS_ITEMS_BLOCKLIST'
+    id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    item_id= db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+
+class Users_Blacklist(db.Model, UserMixin):
+    __tablename__='USERS_BLACKLIST'
+    id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
 
 
 class LoginForm(FlaskForm):
