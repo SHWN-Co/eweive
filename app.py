@@ -49,18 +49,18 @@ class OUApp(db.Model):
 class Process_Items(db.Model, UserMixin):
     __tablename__='PROCESS_ITEMS'
     id=db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String(200), nullable=False)
-    key_words = db.Column(db.String(200), nullable=False )
+    title = db.Column(db.text, nullable=False)
+    image = db.Column(db.text, nullable=False)
+    key_words = db.Column(db.text, nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
 
 class Items(db.Model, UserMixin):
     __tablename__='ITEMS'
     id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String(200), nullable=False)
-    key_words = db.Column(db.String(200), nullable=False )
+    title = db.Column(db.text, nullable=False)
+    image = db.Column(db.text, nullable=False)
+    key_words = db.Column(db.text, nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
     highest_bid = db.Column(db.Integer, nullable=False)
@@ -82,7 +82,7 @@ class Bid(db.Model, UserMixin):
     highest_bid = db.Column(db.Integer, nullable=False)
 
 class Rate(enum.Enum):
-    one = 1
+    one = 1 
     two = 2
     three = 3
     four = 4
@@ -106,18 +106,18 @@ class Complaints(db.Model, UserMixin):
     reason=db.Column(db.Text, nullable=False)
 
 class Sus_Reports(db.Model, UserMixin):
-    __tablename__='Sus_Reports'
+    __tablename__='SUS_REPORTS'
     id=db.Column(db.Integer, primary_key=True)
     item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
 
 class Sus_Items(db.Model, UserMixin):
-    __tablename__='Sus_Items'
+    __tablename__='SUS_ITEMS'
     id=db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
     item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
 
 class Police_Reports(db.Model, UserMixin):
-    __tablename__='Police_Reports'
+    __tablename__='POLICE_REPORTS'
     id=db.Column(db.Integer, primary_key=True)
     date_and_time=db.Column(DateTime(timezone=True), server_default=func.now())
     user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
