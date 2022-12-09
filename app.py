@@ -1,5 +1,6 @@
+import enum
 from flask import Flask, render_template, request, url_for, redirect, session, flash
-from sqlalchemy import DateTime, ForeignKey, func # (once we start creating html pages)
+from sqlalchemy import DateTime, Enum, ForeignKey, func, Integer # (once we start creating html pages)
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -80,13 +81,21 @@ class Bid(db.Model, UserMixin):
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
 
+class Rate(enum.Enum):
+    one = 1
+    two = 2
+    three = 3
+    four = 4
+    five = 5 
 
 
 class Give_Rating(db.Model, UserMixin):
     __tablename__= 'RATINGS'
     id= db.Column(db.Integer, primary_key=True)
+    trans_id=db.Column(db.Integer, ForeignKey("Transactions.id"), nullable=False)
     user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
+    rating = db.Column(Enum(Rate), nullable=False)
     
 
 class Complaints(db.Model, UserMixin):
