@@ -49,18 +49,18 @@ class OUApp(db.Model):
 class Process_Items(db.Model, UserMixin):
     __tablename__='PROCESS_ITEMS'
     id=db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.text, nullable=False)
-    image = db.Column(db.text, nullable=False)
-    key_words = db.Column(db.text, nullable=False )
+    title = db.Column(db.Text, nullable=False)
+    image = db.Column(db.Text, nullable=False)
+    key_words = db.Column(db.Text, nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
 
 class Items(db.Model, UserMixin):
     __tablename__='ITEMS'
     id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.text, nullable=False)
-    image = db.Column(db.text, nullable=False)
-    key_words = db.Column(db.text, nullable=False )
+    title = db.Column(db.Text, nullable=False)
+    image = db.Column(db.Text, nullable=False)
+    key_words = db.Column(db.Text, nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
     highest_bid = db.Column(db.Integer, nullable=False)
