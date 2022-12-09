@@ -110,6 +110,12 @@ class Sus_Reports(db.Model, UserMixin):
     id=db.Column(db.Integer, primary_key=True)
     item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
 
+class Sus_Items(db.Model, UserMixin):
+    __tablename__='Sus_Items'
+    id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+
 class Police_Reports(db.Model, UserMixin):
     __tablename__='Police_Reports'
     id=db.Column(db.Integer, primary_key=True)
@@ -124,6 +130,10 @@ class Users_Items_Blocklist(db.Model, UserMixin):
     user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
     item_id= db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
 
+class Users_Blacklist(db.Model, UserMixin):
+    __tablename__='USERS_BLACKLIST'
+    id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
 
 
 class LoginForm(FlaskForm):
