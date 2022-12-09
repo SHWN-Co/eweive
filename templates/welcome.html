@@ -19,22 +19,23 @@
         <form class="form-inline">
             <div class="input-group searchBar">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
             </div>
         </form>
         <div>
+            <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ name }}'s Account</a>
             <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
         </div>
     </nav>
-    {%if name %}
+    <!-- {%if name %}
     <strong>Hello there, {{ name }}!</strong> It's {{ date.strftime("%A, %d %B, %Y at %X") }}.
-    {% endif %}
+    {% endif %} -->
     <div class="container c1">
         <div class="row">
             <div class="col-3">
                 <h2 class="display-5"><strong>Weive goodbye to high prices!</strong></h2>
                 <p class="lead">Shop eWeive's must-haves for the holidays.</p>
-                <button type="button" class="btn btn-outline-dark">Shop Items &#8594;</button>
+                <a href="{{ url_for('searchPage') }}" type="button" class="btn btn-outline-dark">Shop Items &#8594;</a>
             </div>
             <div class="col-3 slogan-items">
                 <p class="lead">For the Kitchen &#8594;</p>
