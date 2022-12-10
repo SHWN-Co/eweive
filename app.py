@@ -92,8 +92,8 @@ class Rate(enum.Enum):
 class Give_Rating(db.Model, UserMixin):
     __tablename__= 'RATINGS'
     id= db.Column(db.Integer, primary_key=True)
-    trans_id=db.Column(db.Integer, ForeignKey("Transactions.id"), nullable=False)
-    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    trans_id=db.Column(db.Integer, ForeignKey("TRANSACTIONS.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     rating = db.Column(Enum(Rate), nullable=False)
     
@@ -101,39 +101,39 @@ class Give_Rating(db.Model, UserMixin):
 class Complaints(db.Model, UserMixin):
     __tablename__='COMPLAINTS'
     id= db.Column(db.Integer, primary_key = True)
-    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
     complaint_cnt=db.Column(db.Integer, nullable=False)
     reason=db.Column(db.Text, nullable=False)
 
 class Sus_Reports(db.Model, UserMixin):
     __tablename__='SUS_REPORTS'
     id=db.Column(db.Integer, primary_key=True)
-    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+    item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
 
 class Sus_Items(db.Model, UserMixin):
     __tablename__='SUS_ITEMS'
     id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
-    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
 
 class Police_Reports(db.Model, UserMixin):
     __tablename__='POLICE_REPORTS'
     id=db.Column(db.Integer, primary_key=True)
     date_and_time=db.Column(DateTime(timezone=True), server_default=func.now())
-    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
-    report_id=db.Column(db.Integer, ForeignKey("Sus_Reports.id"), nullable=False)
-    item_id=db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    report_id=db.Column(db.Integer, ForeignKey("SUS_REPORTS.id"), nullable=False)
+    item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
 
 class Users_Items_Blocklist(db.Model, UserMixin):
     __tablename__='USERS_ITEMS_BLOCKLIST'
     id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
-    item_id= db.Column(db.Integer, ForeignKey("Items.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    item_id= db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
 
 class Users_Blacklist(db.Model, UserMixin):
     __tablename__='USERS_BLACKLIST'
     id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, ForeignKey("Users.id"), nullable=False)
+    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
 
 
 class LoginForm(FlaskForm):
