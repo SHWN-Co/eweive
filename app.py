@@ -223,6 +223,42 @@ def accountPage():
         name=current_user.username,
     )
 
+@app.route("/account/collect-transaction-history", methods = ['GET', 'POST'])
+@login_required
+def collectTransactions():
+    # this is for SUs only
+    return render_template(
+        "accountPage.html",
+        transactions = Transactions.query.all(),
+        name=current_user.username
+    )
+
+@app.route("/account/collect-transaction-history", methods = ['GET', 'POST'])
+@login_required
+def collectTransactionsUser():
+    # this is for SUs only
+    if request.method == "POST":
+       # getting input with user = fUser in HTML form
+       user = request.form.get("fUser")
+    transactions = Transactions.query.filter((Transactions.seller_id==user) | (Transactions.buyer_id==user))
+    return render_template(
+        "accountPage.html",
+        transactions = transactions,
+        name=current_user.username
+    )
+
+@app.route("/account/transactions-history", methods = ['GET', 'POST'])
+@login_required
+def transactionsHistory():
+    # this is for OUs only
+    transactions = Transactions.query.filter((Transactions.seller_id==current_user.id) | (Transactions.buyer_id==current_user.id))
+    return render_template(
+        "accountPage.html",
+        transactions = transactions,
+        name=current_user.username
+    )
+
+
 @app.route("/search", methods = ['GET', 'POST'])
 def searchPage():
     return render_template(
