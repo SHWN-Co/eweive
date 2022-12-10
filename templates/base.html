@@ -10,7 +10,7 @@
     <title>EWeive</title>
 </head>
 <nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand pr-4" href="#">EWEIVE</a>
+    <a class="navbar-brand pr-4" href="{{ url_for('home') }}">EWEIVE</a>
     <form class="form-inline">
         <div class="input-group searchBar">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -18,10 +18,17 @@
         </div>
     </form>
     <!-- place if statement here with user authentication, if not, we can create separate base -->
+    {% if not (current_user.is_authenticated and current_user.is_active) %}
     <div>
         <a href="{{ url_for('OUApplication') }}" class="btn btn-primary">Apply to be an OU</a>
         <a href="{{ url_for('login') }}" type="button" class="btn btn-outline-primary">Sign in</a>
     </div>
+    {% else %}
+    <div>
+        <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ current_user.username }}'s Account</a>
+        <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
+    </div>
+    {% endif %}
 </nav>
 
 <body>

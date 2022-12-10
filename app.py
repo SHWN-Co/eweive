@@ -178,18 +178,18 @@ def login():
         if user:
             if user.password == form.password.data:
                 login_user(user)
-                return redirect(url_for('welcome'))
+                return redirect(url_for('home'))
         return '<h1>invalid username or password</h1>'
     return render_template('login.html', form = form)
 
-@app.route("/welcome") 
-@login_required
-def welcome():
-    return render_template(
-        "welcome.html",
-        name=current_user.username,
-        date=datetime.now()
-    )
+# @app.route("/welcome") 
+# @login_required
+# def welcome():
+#     return render_template(
+#         "welcome.html",
+#         name=current_user.username,
+#         date=datetime.now()
+#     )
 
 @app.route("/logout")
 @login_required
