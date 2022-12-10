@@ -162,8 +162,8 @@ def OUApplication():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
-        db.session.add(new_user)
+        # new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
+        # db.session.add(new_user)
         new_app = OUApp(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
         db.session.add(new_app)
         db.session.commit()
