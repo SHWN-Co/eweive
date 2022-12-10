@@ -233,7 +233,7 @@ def collectTransactions():
         name=current_user.username
     )
 
-@app.route("/account/collect-transaction-history", methods = ['GET', 'POST'])
+@app.route("/account/collect-transaction-history/user", methods = ['GET', 'POST'])
 @login_required
 def collectTransactionsUser():
     # this is for SUs only
