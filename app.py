@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, DateTimeField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
 from datetime import datetime
 
@@ -146,6 +146,17 @@ class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Length(min = 8, max = 80)])
     phone = StringField('Phone Number', validators=[InputRequired(), Length(min=9, max = 20)])
 
+class submitItemForm(FlaskForm):
+    title = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
+    image = StringField('Image Address', validators=[InputRequired(), Length(min=6, max=80)])
+    key_words = StringField('Key Words', validators=[InputRequired(), Length(min=2, max=80)])
+    time_limit = DateTimeField('Time Limit', validators=[InputRequired()])
+ 
+class complaintsForm(FlaskForm):
+    reason = StringField('Reasoning', validators=[InputRequired(), Length(min=4, max=300)])
+    
+ 
+
 app.app_context().push()
 
 @login_manager.user_loader
@@ -182,6 +193,31 @@ def login():
         return '<h1>invalid username or password</h1>'
     return render_template('login.html', form = form)
 
+@app.route("/submitItem", methods = ['GET', 'POST'])
+def submitItem():
+        form = submitItemForm()
+
+        if form.validate_on_submit():
+        # new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
+        # db.session.add(new_user)
+            new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, time_limit = form.time_limit.data)
+            db.session.add(new_item)
+            db.session.commit()
+            return '<h1>new item submitted, awaiting processing</h1>'
+        return render_template("submitItem.html", form = form)
+    
+@app.route("/fileComplaint", methods = ['GET', 'POST'])
+def fileComplaint():
+        form = complaintsForm()
+
+        if form.validate_on_submit():
+                new_complaint = Complaints(user_id=current_user.id,complaint_cnt=0,reason=form.reason.data)
+                db.session.add(new_complaint)
+                db.session.commit()
+                return '<h1>Complaint submitted, awaiting settlement decision. </h1>'
+              
+        return render_template("fileComplaint.html", form = form)
+ 
 # @app.route("/welcome") 
 # @login_required
 # def welcome():
@@ -232,14 +268,4 @@ def searchPage():
         highest_bid="$100.00"
     )
 
-@app.route("/submit-item", methods = ['GET', 'POST'])
-def submitItem():
-    return render_template(
-        "submitItem.html"
-    )
 
-@app.route("/file-complaint", methods = ['GET', 'POST'])
-def fileComplaint():
-    return render_template(
-        "fileComplaint.html"
-    )

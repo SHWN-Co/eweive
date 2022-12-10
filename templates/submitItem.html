@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+{% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 {% block body %}
 
@@ -8,31 +9,23 @@
     <!-- JS Popper -->
     {% if (current_user.user_type == "OU") %}
     <div>
-        <form>
-            <div class="mb-3">
-              <label for="Title" class="form-label">Title</label>
-              <input type="text" class="form-control" id="InputTitle" aria-describedby="TitleHelp">
-              
-            </div>
-            <div class="mb-3">
-              <label for="InputIMGAddress" class="form-label">Image Address</label>
-              <input type="text" class="form-control" id="IMGAddress">
-            </div>
-            <div class="mb-3">
-                <label for="InputKeyWords" class="form-label">Key Words</label>
-                <input type="text" class="form-control" id="keyWords">
-            </div>
-            <div class="mb-3">
-                <label for="timeLimit" class="form-label">Time Limit</label>
-                <input type="date" class="form-control" id="timeLimit">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+          <form class="form-submitItem" method="POST" action="/submitItem">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.title) }}
+            <br>
+            {{ wtf.form_field(form.image) }}
+            <br>
+            {{ wtf.form_field(form.key_words) }}
+            <br>
+            {{ wtf.form_field(form.time_limit) }}
+            <br>
+            <button class="btn btn-primary" type="submit"> Submit Item </button>
+        </form>
     </div>
     
     {% else %} <p>
-        youre not an OU
+       not OU
+         
         </p>
 
     <div>
