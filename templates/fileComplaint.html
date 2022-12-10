@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+{% block body %}
+
+<body>
+    
+    <!-- JS Popper -->
+    {% if (current_user.user_type == "OU") %}
+    <div>
+        <form>
+            <div class="mb-3">
+              <label for="Reason" class="form-label">Complaint Reasoning</label>
+              <input type="text" class="form-control" id="InputReason" aria-describedby="ReasonHelp">
+              
+            </div>
+            <button type="submitComplaint" class="btn btn-primary">Submit Complaint</button>
+          </form>
+    </div>
+
+    {% else %} <p>
+        youre not an OU
+        </p>
+
+    <div>
+        <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ current_user.username }}'s Account</a>
+        <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
+    </div>
+    {% endif %}
+</body>
+{% endblock %}
+
+</html>

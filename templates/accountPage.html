@@ -6,6 +6,8 @@
 <body>
     <p>Hi, {{ name }}! This is your account page.</p>
     <!-- JS Popper -->
+    <a href="{{ url_for('submitItem') }}" class="btn btn-primary accountBtn">Submit Item</a>
+    <a href="{{ url_for('fileComplaint') }}" class="btn btn-primary accountBtn">File a Complaint</a>
 
 </body>
 {% endblock %}

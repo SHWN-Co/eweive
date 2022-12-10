@@ -231,3 +231,15 @@ def searchPage():
         item_title="Vincent Van Gogh Replica Painting Sunflowers",
         highest_bid="$100.00"
     )
+
+@app.route("/submit-item", methods = ['GET', 'POST'])
+def submitItem():
+    return render_template(
+        "submitItem.html"
+    )
+
+@app.route("/file-complaint", methods = ['GET', 'POST'])
+def fileComplaint():
+    return render_template(
+        "fileComplaint.html"
+    )
