@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head></head>
+   <body>
+      
+      <h3>
+         <a href = "{{ url_for('showComplaints') }}">Complaint History</a>
+      </h3>
+      
+      <hr/>
+      {%- for message in get_flashed_messages() %}
+         {{ message }}
+      {%- endfor %}
+		
+      <!-- <h3>Submit a <a href = "{{ url_for('fileComplaint') }}">new 
+         </a> item</h3> -->
+      
+      <table>
+         <thead>
+            <tr>
+               <th>User ID</th>
+               <th>Complaint Reasoning</th>
+            </tr>
+         </thead>
+         
+         <tbody>
+            {%for complaint in Complaints%}
+               <tr>
+                  <td>{{complaint.id }}</td>
+                  <td>{{complaint.reason }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+      
+   </body>
+</html>

@@ -147,7 +147,7 @@ class RegisterForm(FlaskForm):
     phone = StringField('Phone Number', validators=[InputRequired(), Length(min=9, max = 20)])
 
 class submitItemForm(FlaskForm):
-    title = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
+    title = StringField('Title', validators=[InputRequired(), Length(min=4, max=20)])
     image = StringField('Image Address', validators=[InputRequired(), Length(min=6, max=80)])
     key_words = StringField('Key Words', validators=[InputRequired(), Length(min=2, max=80)])
     time_limit = DateTimeField('Time Limit', validators=[InputRequired()])
@@ -193,6 +193,13 @@ def login():
         return '<h1>invalid username or password</h1>'
     return render_template('login.html', form = form)
 
+
+
+@app.route('/showItems')
+def showItems():
+   return render_template('showItems.html', Process_Items = Process_Items.query.all() )
+
+
 @app.route("/submitItem", methods = ['GET', 'POST'])
 def submitItem():
         form = submitItemForm()
@@ -201,11 +208,17 @@ def submitItem():
         # new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
         # db.session.add(new_user)
             new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, time_limit = form.time_limit.data)
+            # seller_id= current_user.id
             db.session.add(new_item)
             db.session.commit()
-            return '<h1>new item submitted, awaiting processing</h1>'
+            flash('new item submitted, awaiting processing') 
+            return redirect(url_for('showItems'))
         return render_template("submitItem.html", form = form)
-    
+
+@app.route('/showComplaints')
+def showComplaints():
+   return render_template('showComplaints.html', Complaints = Complaints.query.all() )
+
 @app.route("/fileComplaint", methods = ['GET', 'POST'])
 def fileComplaint():
         form = complaintsForm()
@@ -214,7 +227,8 @@ def fileComplaint():
                 new_complaint = Complaints(user_id=current_user.id,complaint_cnt=0,reason=form.reason.data)
                 db.session.add(new_complaint)
                 db.session.commit()
-                return '<h1>Complaint submitted, awaiting settlement decision. </h1>'
+                flash('Complaint submitted, awaiting settlement decision') 
+                return redirect(url_for('showComplaints'))
               
         return render_template("fileComplaint.html", form = form)
  

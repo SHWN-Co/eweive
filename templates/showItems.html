@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head></head>
+   <body>
+      
+      <h3>
+         <a href = "{{ url_for('showItems') }}">Item Submission History</a>
+      </h3>
+      
+      <hr/>
+      {%- for message in get_flashed_messages() %}
+         {{ message }}
+      {%- endfor %}
+		
+      <h3>Submit a <a href = "{{ url_for('submitItem') }}">new 
+         </a> item</h3>
+      
+      <table>
+         <thead>
+            <tr>
+               <th>Title</th>
+               <th>Image Address</th>
+               <th>Key Words</th>
+               <th>Time Limit</th>
+            </tr>
+         </thead>
+         
+         <tbody>
+            {%for Item in Process_Items%}
+               <tr>
+                  <td>{{Item.title }}</td>
+                  <td>{{Item.image }}</td>
+                  <td>{{Item.key_words }}</td>
+                  <td>{{Item.time_limit }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+      
+   </body>
+</html>

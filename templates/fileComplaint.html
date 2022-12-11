@@ -19,14 +19,15 @@
     </div>
     
     {% else %} <p>
-       not OU
-         
+       <h3>
+        <a href = "{{ url_for('showComplaints') }}">Complaints pending settlement</a>
+     </h3>
         </p>
 
-    <div>
+    <!-- <div>
         <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ current_user.username }}'s Account</a>
         <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
-    </div>
+    </div> -->
     {% endif %}
 </body>
 {% endblock %}
