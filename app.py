@@ -5,9 +5,12 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms import StringField, PasswordField, BooleanField, DecimalField
+from wtforms.validators import InputRequired, Email, Length, Regexp
 from datetime import datetime
+
+currencyInputRegex = r"^[0-9]+\.[0-9]{2}$"
+numberRegex = r"^[0-9]+$"
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -31,6 +34,7 @@ class User(db.Model, UserMixin):
     phone_number = db.Column(db.String(100))
     cc_number = db.Column(db.String(100))
     email = db.Column(db.String(50), nullable = False, unique = True)
+    balance = db.Column(db.Integer, nullable = False)
     def get_id(self):
         return self.id
 
@@ -143,8 +147,36 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
-    email = StringField('Email', validators=[InputRequired(), Length(min = 8, max = 80)])
-    phone = StringField('Phone Number', validators=[InputRequired(), Length(min=9, max = 20)])
+    email = StringField('Email', validators=[InputRequired(), Email(message="Invalid email"), Length(min = 1, max = 80)])
+    phone = StringField('Phone Number', validators=[InputRequired(), Regexp(regex = numberRegex, message = "Notice: Only input numbers" ), Length(min=9, max = 20)])
+
+def buildUpdateInfo(curr_user="", curr_email="", curr_phone=""):
+    class updateInfo(FlaskForm):
+        username = StringField('Username', default = curr_user, validators=[InputRequired(), Length(min=4, max=20)])
+        email = StringField('Email', default = curr_email, validators=[InputRequired(), Email(message="Invalid email"), Length(min=1, max = 80)])
+        phone = StringField('Phone Number', default = curr_phone, validators=[InputRequired(), Regexp(regex = numberRegex, message = "Notice: Only input numbers" ), Length(min=9, max = 20)])
+    return updateInfo();
+
+class updatePasswordForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[InputRequired(), Length(min=6, max=80)])
+    new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
+    confirm_password = PasswordField('Confirm New Password', validators=[InputRequired(), Length(min=6, max=80)])
+
+class addCCForm(FlaskForm):
+    cc_number = StringField('Credit Card Number', validators=[InputRequired(), Regexp(regex = numberRegex, message = "Notice: Only input numbers" ), Length(min = 12, max =80)])
+
+class withdrawForm(FlaskForm):
+    withdraw = StringField('Withdraw Amount', validators=[InputRequired(), Regexp(regex = currencyInputRegex, message="Notice: Valid Input Dollar Amount: x.xx")])
+
+class depositForm(FlaskForm):
+    deposit = StringField('Deposit Amount', validators=[InputRequired(), Regexp(regex = currencyInputRegex, message="Notice: Valid Input Dollar Amount: x.xx")])
+
+#function to return balance
+def returnBalance(balance):
+    a = 0
+    if balance is not None:
+        a = balance/100
+    return a
 
 app.app_context().push()
 
@@ -215,13 +247,110 @@ def reportPage():
         "reportPage.html"
     )
 
-@app.route("/account", methods = ['GET', 'POST'])
+@app.route("/account")
 @login_required
 def accountPage():
+    user_balance = returnBalance(current_user.balance)
     return render_template(
         "accountPage.html",
         name=current_user.username,
+        balance = '%.2f' % user_balance
     )
+
+@app.route("/change_info", methods = ['GET', 'POST'])
+@login_required
+def changeInfo():
+    form = buildUpdateInfo(current_user.username, current_user.email, current_user.phone_number)
+    user = User.query.filter_by(id=current_user.id).first()
+    if form.validate_on_submit():
+        if user:
+            user.username = form.username.data
+            user.email = form.email.data
+            user.phone_number = form.phone.data
+            db.session.commit()
+            flash('successfully changed user info')
+            return redirect(url_for('accountPage'))
+    return render_template("changeInfo.html", form = form)
+
+@app.route("/change_pass", methods = ['GET', 'POST'])
+@login_required
+def changePass():
+    updatePass = updatePasswordForm()
+    user = User.query.filter_by(id=current_user.id).first()
+    if updatePass.validate_on_submit():
+        if user:
+            if (user.password == updatePass.current_password.data and updatePass.new_password.data == updatePass.confirm_password.data):
+                user.password = updatePass.new_password.data
+                db.session.commit()
+                flash('successfully changed password')
+                return redirect(url_for('accountPage'))
+            else:
+                flash('Current password does not match OR new password and confirm new password do not match')
+    return render_template("changePass.html", updatePass = updatePass)
+
+@app.route("/cardUpdate", methods = ['GET', 'POST'])
+@login_required
+def updateCard():
+    form = addCCForm()
+    user = User.query.filter_by(id=current_user.id).first()
+    if form.validate_on_submit():
+        if user:
+            user.cc_number = form.cc_number.data
+            db.session.commit()
+            flash('successfully updated card')
+            return redirect(url_for('accountPage'))
+    return render_template("updateCard.html", form = form)
+
+@app.route("/withdraw", methods = ['GET', 'POST'])
+@login_required
+def withdraw():
+    form = withdrawForm()
+    user = User.query.filter_by(id=current_user.id).first()
+    user_balance = returnBalance(current_user.balance)
+    if form.validate_on_submit():
+        input = float(form.withdraw.data)
+        if user:
+            if user.balance is None:
+                user.balance = 1
+                db.session.commit()
+            if input < 0.01:
+                flash('Invalid withdrawal amount!')
+            elif input > user_balance:
+                flash('Attempting to withdraw more than your account balance!')
+            else:
+                user.balance = user.balance - (input*100)
+                db.session.commit()
+                flash('Withdrew $%s from your account balance.' % form.withdraw.data)
+                return redirect(url_for('accountPage'))
+    return render_template('withdraw.html', form = form, balance = '%.2f' % user_balance)
+
+@app.route("/deposit", methods = ['GET', 'POST'])
+@login_required
+def deposit():
+    form = depositForm()
+    user = User.query.filter_by(id=current_user.id).first()
+    user_balance = returnBalance(current_user.balance)
+    if form.validate_on_submit():
+        input = float(form.deposit.data)
+        if user:
+            if user.balance is None:
+                user.balance = 0
+                db.session.commit()
+            if input > 0.01:
+                user.balance = user.balance + (input*100)
+                db.session.commit()
+                flash('Deposited $%s to your account balance' % form.deposit.data)
+                return redirect(url_for('accountPage'))
+            else:
+                flash('Invalid deposit amount!')
+    return render_template('deposit.html', form = form, balance = '%.2f' % user_balance)
+
+@app.route("/reviewApplications", methods = ['GET', 'POST'])
+@login_required
+def approveApps():
+    if current_user.user_type == 'OU':
+        return redirect(url_for('home'))
+    return render_template('approveApps.html')
 
 @app.route("/search", methods = ['GET', 'POST'])
 def searchPage():
