@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, DecimalField
+from wtforms import StringField, PasswordField, TextAreaField, RadioField
 from wtforms.validators import InputRequired, Email, Length, Regexp
 from datetime import datetime
 
@@ -171,6 +171,10 @@ class withdrawForm(FlaskForm):
 class depositForm(FlaskForm):
     deposit = StringField('Deposit Amount', validators=[InputRequired(), Regexp(regex = currencyInputRegex, message="Notice: Valid Input Dollar Amount: x.xx")])
 
+class postForm(FlaskForm):
+    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
+    choice = RadioField('Approve?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
+
 #function to return balance
 def returnBalance(balance):
     a = 0
@@ -194,8 +198,6 @@ def OUApplication():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        # new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
-        # db.session.add(new_user)
         new_app = OUApp(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
         db.session.add(new_app)
         db.session.commit()
@@ -350,7 +352,28 @@ def deposit():
 def approveApps():
     if current_user.user_type == 'OU':
         return redirect(url_for('home'))
-    return render_template('approveApps.html')
+    pending = OUApp.query.all()
+    pending_headers = OUApp.__table__.columns.keys()
+    if request.method == 'POST':
+        user_id = request.form['item_container']
+        return redirect(url_for('approve_user', id = user_id))
+    return render_template('approveApps.html', pending = pending, headers = pending_headers)
+
+@app.route("/reviewApplications/<id>", methods = ['GET', 'POST'])
+@login_required
+def approve_user(id=0):
+    user = OUApp.query.filter_by(id=id).first()
+    form = postForm()
+    if form.validate_on_submit():
+        if user:
+            if (form.choice.data == 'Yes'):
+                new_user = User(username=user.username, email = user.email, phone_number = user.phone_number, password = user.password, user_type = "OU", balance = 0)
+                db.session.add(new_user)
+            OUApp.query.filter_by(id=id).delete()
+            db.session.commit()
+            return redirect(url_for('approveApps'))
+    return render_template('approveUser.html', id = id, name = user.username, phone = user.phone_number, email = user.email, form = form)
+
 
 @app.route("/search", methods = ['GET', 'POST'])
 def searchPage():

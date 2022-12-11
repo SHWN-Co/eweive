@@ -30,6 +30,9 @@
     <br><br>
     <a href="{{ url_for('withdraw') }}" class="btn btn-primary">Withdraw Money</a>
     <a href="{{ url_for('deposit') }}" class="btn btn-primary">Deposit Money</a>
+    {% if current_user.user_type == 'SU' %}
+    <a href="{{ url_for('approveApps') }}" class ="btn btn-primary"> Approve OU Applications</a>
+    {% endif %}
 </body>
 {% endblock %}
 
