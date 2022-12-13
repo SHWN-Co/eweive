@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+{% block body %}
+
+<body>
+    <div class="row">
+        <div class="col-3">
+            <a href="{{ url_for('validateReports') }}" class="btn btn-outline-secondary mb-2">View All Reports</a>
+        </div>
+    </div>
+    <div class="col-6">
+        <form action="{{ url_for('confirmReport')}}" method="post">
+            <div class="input-group mb-3">
+                <input class="form-control col-4" type="number" id="user" name="fitemId"
+                    placeholder="Item ID">
+                <button type="submit" class="btn btn-outline-secondary">Confirm Report</button>
+            </div>
+
+    </div>
+    <table class="table table-hover pr-2">
+        <thead>
+            <tr>
+                <th class="col-2">ID</th>
+                <th class="col-3">Item ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reportItem in reportedItems %}
+            <tr>
+                <td>{{ reportItem.id }}</td>
+                <td>{{ reportItem.item_id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+{% endblock %}
+
+</html>
