@@ -30,7 +30,17 @@
     <br><br>
     <a href="{{ url_for('withdraw') }}" class="btn btn-primary">Withdraw Money</a>
     <a href="{{ url_for('deposit') }}" class="btn btn-primary">Deposit Money</a>
-    {% if current_user.user_type == 'SU' %}
+    {% if (current_user.user_type == "OU") %}
+    <a href="{{ url_for('submitItem') }}" class="btn btn-primary accountBtn">Submit Item</a>
+    <a href="{{ url_for('fileComplaint') }}" class="btn btn-primary accountBtn">File a Complaint</a>
+    <a href="{{ url_for('ratePage') }}" class="btn btn-primary accountBtn">Rate</a>
+    <a href="{{ url_for('OUcomplaint') }}" class="btn btn-primary accountBtn">Complaint History</a>
+    <a href="{{ url_for('OUitems') }}" class="btn btn-primary accountBtn">Your Items Pending Approval</a>
+    {% else %}
+    <a href="{{ url_for('showItems') }}" class="btn btn-primary accountBtn">Approve Items</a>
+    <a href="{{ url_for('showComplaints') }}" class="btn btn-primary accountBtn">Settle Complaints</a>
+    <a href="{{ url_for('showUsers') }}" class="btn btn-primary accountBtn">Remove Users</a>
+    {% endif %}    {% if current_user.user_type == 'SU' %}
     <a href="{{ url_for('approveApps') }}" class ="btn btn-primary"> Approve OU Applications</a>
     {% endif %}
     <h3 class="px-5 pt-3">Hello, {{ name }}!</h3>

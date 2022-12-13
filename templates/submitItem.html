@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block body %}
+
+<body>
+    
+    <!-- JS Popper -->
+    {% if (current_user.user_type == "OU") %}
+    <div>
+          <form class="form-submitItem" method="POST" action="/submitItem">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.title) }}
+            <br>
+            {{ wtf.form_field(form.image) }}
+            <br>
+            {{ wtf.form_field(form.key_words) }}
+            <br>
+            {{ wtf.form_field(form.time_limit) }}
+            <br>
+            <br>
+            {{ wtf.form_field(form.description) }}
+            <br>
+           <center> <button class="btn btn-primary" type="submit"> Submit Item </button></center>
+            
+        </form>
+    </div>
+    
+    {% else %} <p>
+        <h3>
+            
+            <a href = "{{ url_for('showItems') }}">Items Pending Approval</a>
+         </h3>
+         
+        </p>
+
+    <!-- <div>
+        <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ current_user.username }}'s Account</a>
+        <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
+    </div> -->
+    {% endif %}
+</body>
+{% endblock %}
+
+</html>

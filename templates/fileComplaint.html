@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block body %}
+
+<body>
+    
+    <!-- JS Popper -->
+    {% if (current_user.user_type == "OU") %}
+    <div>
+          <form class="form-fileComplaint" method="POST" action="/fileComplaint">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.reason) }}
+            <br>
+           
+            <button class="btn btn-primary" type="submit"> Submit Complaint </button>
+           
+        </form>
+
+    </div>
+    
+    {% else %} <p>
+       <h3>
+        <!-- <a href = "{{ url_for('fileComplaint') }}">Complaints pending settlement</a>  -->
+        <a href = "{{ url_for('showComplaints') }}">Complaints pending settlement</a>
+     </h3>
+        </p>
+
+    <!-- <div>
+        <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ current_user.username }}'s Account</a>
+        <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
+    </div> -->
+    {% endif %}
+</body>
+{% endblock %}
+
+</html>

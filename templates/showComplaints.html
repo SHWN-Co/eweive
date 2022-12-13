@@ -1,0 +1,113 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head></head>
+
+<body>
+
+    <h3>
+        <a href="{{ url_for('showComplaints') }}">Complaint History</a>
+    </h3>
+
+    <hr />
+    {%- for message in get_flashed_messages() %}
+    {{ message }}
+    {%- endfor %}
+
+     <h3>Submit a <a href = "{{ url_for('fileComplaint') }}">new 
+         </a> item</h3>  
+     <table>
+        <thead>
+            <tr>
+                <th>Complaint ID</th>
+                <th>Complaint Reasoning</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% if (current_user.user_type == "OU") %}
+            {%for complaint2 in complaints%}
+                {% if (current_user.id == complaint2.user_id) %}
+            <tr>
+                    <td>{{complaint2.id }}</td>
+                    <td>{{complaint2.reason }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            {% else %}
+            
+            <tr>
+                {%for complaint1 in complaints%}
+                <tr>
+                    <td>{{complaint1.id }}</td>
+                    <td>{{complaint1.reason }}</td> 
+                </tr>
+                
+                <!-- <td class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio" value="settle" >
+                    <label class="form-check-label" for="inlineRadio">Settle?</label>
+                 </td>   -->
+                <!-- <form class="form-showComplaints" method="POST" action="/settleComplaints/{{ id }}">
+                    {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.body) }}
+                    {{form.choice.label}}<br>{{ wtf.form_field(form.choice) }}
+                    <br>
+                    <button class="btn btn-primary" type="submit"> Confirm </button>
+                </form> - -->
+
+<!-- 
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    <center> <button class="btn btn-primary" type="submit"> Submit</button></center>  -->
+<!-- </body>
+
+</html>    --> 
+
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+{% block body %}
+
+<body>
+    <h2 class="text-center pt-5">Pending Complaints</h2>
+    <br><br>
+    <table style="width:100%">
+        <tr>
+            {% for header in headers %}
+                {% if (header != 'password') %}
+                <th>{{ header }}</th>
+                {% endif %} 
+            {% endfor %}
+        </tr>
+        {% for item in pending %}
+        <tr>
+            <td>{{ item.id }} </td>
+            <td>{{ item.user_id }} </td>
+            <td>{{ item.complaint_cnt }} </td>
+            <td>{{ item.reason }} </td>
+            <td>
+                <form action = "{{ url_for('showComplaints') }}" method = "POST">
+                    <input id="item_container" name ="item_container" type="hidden" value="{{ item.id }}">
+                    <button class = "btn btn-primary" type="submit"> Review </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- JS Popper -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+{% endblock %}
+
+</html>

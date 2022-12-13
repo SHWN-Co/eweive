@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+<head></head>
+
+<body>
+
+    <h3>
+        <a href="{{ url_for('OUcomplaint') }}">Complaint History</a>
+    </h3>
+
+    <hr />
+    {%- for message in get_flashed_messages() %}
+    {{ message }}
+    {%- endfor %}
+    
+     <h3>Submit a <a href = "{{ url_for('fileComplaint') }}">new</a> complaint</h3>  
+     <center>
+     <table>
+        <thead>
+            
+            <tr>
+                
+              <th>Complaint ID</th>
+                <th>Complaint Reasoning</th>
+            </div>
+            </tr>
+        
+        </thead>
+
+        <tbody>
+            
+            {%for complaint2 in Complaints%}
+                {% if (current_user.id == complaint2.user_id) %}
+            <tr>
+                    <td>{{complaint2.id }}</td>
+                    <td>{{complaint2.reason }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        
+     
+ </body>
+</center>
+ </html>
+
+{% endblock %}
+</html>     
