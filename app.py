@@ -745,6 +745,7 @@ def confirmReport():
         db.session.add(usertoBList)
         Sus_Reports.query.filter_by(item_id=itemReported).delete() # delete from sus reports
         User.query.filter_by(id=sellersid).delete() # delete from users
+        Items.query.filter_by(seller_id=sellersid).delete() # delete from users
         db.session.commit()
         return render_template(
             "validateReports.html",
