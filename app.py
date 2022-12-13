@@ -221,7 +221,7 @@ class postForm2(FlaskForm):
 
 class postForm3(FlaskForm):
     body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
-    choice = RadioField('Remove?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
+    choice = RadioField('Remove?', choices =[('Yes', 'Yes'), ('No', 'No')], validators=[InputRequired()])
 
 
 app.app_context().push()
@@ -235,6 +235,25 @@ def load_user(user_id):
 def home():
     return render_template("homepage.html")
 
+# @app.route('/OUApplication', methods = ['GET', 'POST'])
+# def OUApplication():
+#     form = RegisterForm()
+
+#     if form.validate_on_submit():
+#         new_app = OUApp(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
+#         black_check=db.session.query(Users_Blacklist).filter(Users_Blacklist.email==form.email.data).count()
+#         if(black_check>0):
+#             flash('This email is blacklisted')
+#             OUApp.query.filter_by(id=id).delete()
+#             db.session.commit()
+#             return redirect(url_for('home'))
+        
+        
+#             db.session.add(new_app)
+#             db.session.commit()
+#             flash('Application successfully submitted')
+#             return redirect(url_for('home'))
+#     return render_template("OUApplication.html", form = form)
 @app.route('/OUApplication', methods = ['GET', 'POST'])
 def OUApplication():
     form = RegisterForm()
@@ -246,6 +265,7 @@ def OUApplication():
         flash('Application successfully submitted')
         return redirect(url_for('home'))
     return render_template("OUApplication.html", form = form)
+
 
 @app.route("/login", methods = ['GET', 'POST'])
 def login():
@@ -287,7 +307,7 @@ def submitItem():
             new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, seller_id=current_user.id, time_limit = form.time_limit.data, description=form.description.data)
             # seller_id= current_user.id
             db.session.add(new_item)
-            db.session.commit()
+            db.session.commit() 
             flash('new item submitted, awaiting processing') 
             return redirect(url_for('showItems'))
     return render_template("submitItem.html", form = form)
@@ -634,7 +654,13 @@ def approveApps():
 def approve_user(id=0):
     user = OUApp.query.filter_by(id=id).first()
     if (id == 0 or not user): 
-        return redirect(url_for('approveApps'))
+       #or user.email==Users_Blacklist.query.filter_by(email=user.email)
+        #new_user = Users_Blacklist(user_id=user.id, email=user.email)
+        # db.session.add(new_user)
+         #OUApp.query.filter_by(id=id).delete()
+         #db.session.commit()
+         #flash('Your email has been blacklisted from EWeive')
+         return redirect(url_for('approveApps'))
     form = postForm()
     if form.validate_on_submit():
         if user:
