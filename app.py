@@ -75,7 +75,7 @@ class Transactions(db.Model, UserMixin):
     seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
     highest_bid = db.Column(db.Integer, nullable=False)
 
-class Bid(db.Model, UserMixin):
+class Bids(db.Model, UserMixin):
     __tablename__= 'BIDS'
     id = db.Column(db.Integer, primary_key = True)
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
@@ -224,25 +224,33 @@ def placeBid():
         highest_bid = item.highest_bid
         bid = int(request.form.get("fBid"))
         db.session.query(Items).filter(Items.id == 1).update({'highest_bid': bid})
-        newBid = Bid(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
+        newBid = Bids(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
         db.session.add(newBid)   
         db.session.commit()
         highest_bid = item.highest_bid # for frontend, have to update the actual item and add to bids table
+    allBids = Bids.query.filter(Bids.item_id==item.id).order_by(Bids.highest_bid.desc()).all()
     return render_template(
         "Siemaitem.html",
         image_address="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
         item_title=item.title,
         seller_id=item.seller_id,
-        time_left="December 14, 2022",
+        time_left=(item.time_limit - curDate).days,
+        deadline = item.time_limit.date(),
         highest_bid=highest_bid,
         highest_bid_constraint=highest_bid+1,
-        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.")
+        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.",
+        allBids=allBids)
 
 
 @app.route("/report-item", methods = ['GET', 'POST'])
-def reportPage():
+def sendReport():
+    item = db.session.query(Items).first()
+    newReport = Sus_Reports(item_id = item.id)
+    db.session.add(newReport)   
+    db.session.commit()
     return render_template(
-        "reportPage.html"
+        "reportPage.html",
+        itemName = item.title
     )
 
 @app.route("/account", methods = ['GET', 'POST'])

@@ -46,3 +46,8 @@
 .itemsInSearch {
     height: 200px;
 }
+
+.bidsTable {
+    height: 250px;
+    overflow-y: auto;
+}

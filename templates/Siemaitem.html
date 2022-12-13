@@ -12,7 +12,7 @@
             <div class="col-8">
                 <h2><strong>{{ item_title }}</strong></h2>
                 <p>Sold by {{ seller_id }}</p>
-                <p>Time left: <strong>{{ time_left }}</strong></p>
+                <p>Time left: <strong>{{ time_left }} days until {{ deadline }}</strong></p>
                 <div class="container">
                     <div class="row">
                         <div class="col-2">
@@ -36,8 +36,26 @@
                 <h4>Description:</h4>
                 <p>{{item_description}}</p>
                 <p>Does this item look suspicious? Report it <a class="text-danger"
-                        href="{{ url_for('reportPage') }}">here.</a></p>
+                        href="{{ url_for('sendReport') }}">here.</a></p>
             </div>
+        </div>
+        <div class="bidsTable row">
+            <table class="table table-hover pr-2 table-responsive">
+                <thead>
+                    <tr>
+                        <th class="col-2">Time</th>
+                        <th class="col-3">Bid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bid_row in allBids %}
+                    <tr>
+                        <td>{{ bid_row.time_stamp }}</td>
+                        <td>{{ bid_row.highest_bid }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 

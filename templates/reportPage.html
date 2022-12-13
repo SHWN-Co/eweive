@@ -4,22 +4,9 @@
     {% block body %}    
 
 <body>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand pr-4" href="{{ url_for('home') }}">EWEIVE</a>
-        <form class="form-inline">
-            <div class="input-group searchBar">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
-            </div>
-        </form>
-        <div>
-            <a href="{{ url_for('OUApplication') }}" class="btn btn-primary">Apply to be an OU</a>
-            <button type="button" class="btn btn-outline-primary">Sign in</button>
-        </div>
-    </nav>
-    <h2 class="text-center pt-5 text-danger">File a Report</h2>
-    <h5 class="text-center">If you've seen an item on the site that you think  violates our listing policies, let us know so we can look into it.    </h5>
-
+    <h2 class="text-center pt-5 text-danger">You've Filed a Report</h2>
+    <h5 class="text-center">If you've seen an item on the site that you think  violates our listing policies, let us know so we can look into it.</h5>
+    <h6 class="text-center">Thank you for filing a report against item: {{ itemName }}.</h6>
     <!-- Insert form here -->
 
     <!-- JS Popper -->
