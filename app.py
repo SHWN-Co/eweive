@@ -300,7 +300,7 @@ def submitItem():
 def showItems():
     if current_user.user_type == 'OU':
        #return Complaints.query.filter_by(id=current_user.id)
-       flash('new complaint submitted, awaiting settlement') 
+       #flash('new complaint submitted, awaiting settlement') 
        return redirect(url_for('home'))
     pending = Process_Items.query.all()
     pending_headers = Process_Items.__table__.columns.keys()
@@ -429,41 +429,45 @@ def logout():
 @app.route("/item/<id>", methods = ['GET','POST'])
 def itemPage(id=0):
     display_item = Items.query.filter_by(id=id).first()
+    allBids = Bids.query.filter(Bids.item_id==display_item.id).order_by(Bids.highest_bid.desc()).all()
     if (id == 0 or not display_item): return 'item not found!'
     return render_template(
         "item.html",
+        item_id=display_item.id,
+        allBids=allBids,
         image_address=display_item.image,
         item_title=display_item.title,
         seller_id=display_item.seller_id,
         end_date=display_item.time_limit,
         highest_bid=f'${display_item.highest_bid}',
-        highest_bid_constraint=f'${display_item.highest_bid+1}',
+        highest_bid_constraint=display_item.highest_bid+1,
         item_description=display_item.description)
 
-@app.route("/item/place-bid", methods = ['GET','POST'])
-def placeBid():
+@app.route("/item/<id>/place-bid", methods = ['GET','POST'])
+def placeBid(id=0):
     curDate = datetime.now()
-    item = db.session.query(Items).first() # just using the first item for updating the db
+    item = Items.query.filter_by(id=id).first() # just using the first item for updating the db
     if request.method == "POST":
        # getting input with user = fUser in HTML form
         highest_bid = item.highest_bid
         bid = int(request.form.get("fBid"))
-        db.session.query(Items).filter(Items.id == 1).update({'highest_bid': bid})
+        db.session.query(Items).filter(Items.id == id).update({'highest_bid': bid})
         newBid = Bids(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
         db.session.add(newBid)   
         db.session.commit()
         highest_bid = item.highest_bid # for frontend, have to update the actual item and add to bids table
     allBids = Bids.query.filter(Bids.item_id==item.id).order_by(Bids.highest_bid.desc()).all()
     return render_template(
-        "Siemaitem.html",
-        image_address="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
+        "item.html",
+        item_id=item.id,
+        image_address=item.image,
         item_title=item.title,
         seller_id=item.seller_id,
         time_left=(item.time_limit - curDate).days,
         deadline = item.time_limit.date(),
-        highest_bid=highest_bid,
-        highest_bid_constraint=highest_bid+1,
-        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.",
+        highest_bid=f'${item.highest_bid}',
+        highest_bid_constraint=item.highest_bid+1,
+        item_description=item.description,
         allBids=allBids)
 
 
@@ -710,7 +714,6 @@ def searchPage():
         "search.html",
         image="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
         item_title="Vincent Van Gogh Replica Painting Sunflowers",
-        highest_bid=db.session.query(Items).first().highest_bid,
         results = results
     )
 

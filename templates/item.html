@@ -20,24 +20,45 @@
                         </div>
                         <div class="col-6">
                             <h3>{{ highest_bid }}</h3>
-                            <form class="form-inline">
+                            {% if (current_user.is_authenticated and current_user.user_type == "OU") %}
+                            <form action="{{ url_for('placeBid',id=item_id)}}" method="post" class="form-inline">
                                 <div class="input-group bidBar">
-                                    <input class="form-control mr-sm-2" type="search" placeholder="Bid Amount"
-                                        aria-label="BidAmount">
+                                    <input class="form-control mr-sm-2" type="number" min={{highest_bid_constraint}} placeholder="Bid Amount"
+                                        aria-label="BidAmount" name="fBid" required>
                                     <button class="btn btn-primary my-2 my-sm-0" type="submit">Place Bid</button>
                                 </div>
                             </form>
-                            <p><small>Enter US {{ highest_bid_constraint }} or more</small></p>
+                            <p><small>Enter US ${{ highest_bid_constraint }} or more</small></p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <h4>Description:</h4>
                 <p>{{item_description}}</p>
                 <p>Does this item look suspicious? Report it <a class="text-danger"
-                        href="{{ url_for('reportPage') }}">here.</a></p>
+                        href="{{ url_for('sendReport') }}">here.</a></p>
             </div>
         </div>
     </div>
+    <div class="bidsTable row">
+        <table class="table table-hover pr-2 table-responsive">
+            <thead>
+                <tr>
+                    <th class="col-2">Time</th>
+                    <th class="col-3">Bid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bid_row in allBids %}
+                <tr>
+                    <td>{{ bid_row.time_stamp }}</td>
+                    <td>{{ bid_row.highest_bid }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
     <!-- Insert form here -->
 
