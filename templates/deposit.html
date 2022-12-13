@@ -6,24 +6,23 @@
 
 <body>
     <!-- Insert form here -->
-    <h2 class="text-center pt-5">Login</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <a class="close" href="{{ url_for('login') }}">×</a>
-            <ul class=flashes>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form class="form-login signlogform" method="POST" action="/login">
+    <h2 class="text-center pt-5">Deposit</h2>
+    <p> Balance: ${{ balance }}</p>
+    <form class="form-deposit depositForm" method="POST" action="/deposit">
         {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.deposit) }}
         <br>
-        {{ wtf.form_field(form.password) }}
-        <br>
-        <button class="btn btn-primary" type="submit"> Login </button>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <a class="close" href="{{ url_for('deposit') }}">×</a>
+                <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <button class="btn btn-primary" type="submit"> Deposit </button>
     </form>
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

@@ -6,25 +6,18 @@
 
 <body>
     <!-- Insert form here -->
-    <h2 class="text-center pt-5">Login</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <a class="close" href="{{ url_for('login') }}">×</a>
-            <ul class=flashes>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form class="form-login signlogform" method="POST" action="/login">
+    <h2 class="text-center pt-5">Change Info</h2>
+    <form class="form-changeInfo changeInfoForm" method="POST" action="/change_info">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
         <br>
-        {{ wtf.form_field(form.password) }}
+        {{ wtf.form_field(form.email) }}
         <br>
-        <button class="btn btn-primary" type="submit"> Login </button>
+        {{ wtf.form_field(form.phone) }}
+        <br>
+        <button class="btn btn-primary" type="submit"> Change Info </button>
     </form>
+
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

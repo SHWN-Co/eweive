@@ -6,52 +6,65 @@
 
 <body>
     <h2 class="text-center mt-4">Browse Items</h2>
-    <div class="container mt-3">
+    {% if results.count() == 0 %}
+    <p>No Results Found!</p>
+    {% else %}
+        {% for result in results %}
+        <div class="col-sm">
+            <img class="itemsInSearch mx-auto d-block mb-3 mt-2" src="{{result.image}}">
+            <a href="{{ url_for('itemPage', id = result.id) }}"
+                style = "text-align:center" class="mt-3 text-decoration-none text-dark">{{result.title}}<br><strong>{{result.highest_bid}}</strong></a>
+        </div>
+        {% endfor %}
+    {% endif %}
+    <!-- 
+        <div class="container mt-3">
         <div class="row">
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-2" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-2" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="# }}"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-2" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-2" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
         </div>
         <div class="row">
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-4" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-4" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-4" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
             <div class="col-sm">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-4" src={{image}}>
-                <a href="{{ url_for('itemPage') }}"
+                <a href="#"
                     class="mt-3 text-decoration-none text-dark">{{item_title}}<br><strong>{{highest_bid}}</strong></a>
             </div>
         </div>
-    </div>
+    </div> 
+    -->
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

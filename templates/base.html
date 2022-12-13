@@ -1,3 +1,4 @@
+{% import "bootstrap/wtf.html" as wtf %}
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,10 +12,10 @@
 </head>
 <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand pr-4" href="{{ url_for('home') }}">EWEIVE</a>
-    <form class="form-inline">
+    <form class="form-inline" method = "POST" action = "/search">
         <div class="input-group searchBar">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <a href="{{ url_for('searchPage') }}" class="btn btn-primary my-2 my-sm-0" type="submit">Search</a>
+            <input class="form-control mr-sm-2" id ="input" name ="input" type="text" aria-label="Search" required>
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
         </div>
     </form>
     <!-- place if statement here with user authentication, if not, we can create separate base -->
