@@ -9,7 +9,7 @@
     <table style="width:100%">
         <tr>
             {% for header in headers %}
-                {% if (header != 'password') %}
+                {% if (header != 'password') and (header !='balance') %}
                 <th>{{ header }}</th>
                 {% endif %} 
             {% endfor %}
