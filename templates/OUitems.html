@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+<head></head>
+
+<body>
+
+    <h3>
+        <a href="{{ url_for('OUitems') }}">Your Items Pending Approval</a>
+    </h3>
+
+    <hr />
+    {%- for message in get_flashed_messages() %}
+    {{ message }}
+    {%- endfor %}
+    
+     <h3>Submit a <a href = "{{ url_for('submitItem') }}">new</a> item</h3>  
+     <center>
+     <table>
+        <thead>
+            
+            <tr>
+                
+              <th>ID</th>
+                <th>Title</th>
+                <th>Image Address</th>
+                <th>Key Words</th>
+                <th>Seller ID</th>
+                <th>Time Limit</th>
+                <th>Status</th>
+
+            </div>
+            </tr>
+        
+        </thead>
+
+        <tbody>
+            
+            {%for item2 in Process_Items%}
+                {% if (current_user.id == item2.seller_id) %}
+            <tr>
+                    <td>{{item2.title }}</td>
+                    <td>{{item2.image }}</td>
+                    <td>{{item2.key_words }}</td>
+                    <td>{{item2.seller_id}}</td>
+                    <td>{{item2.time_limit }}</td>
+                    <td>{{item2.status}}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        
+     
+ </body>
+</center>
+ </html>
+
+{% endblock %}
+</html>     

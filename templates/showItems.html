@@ -1,41 +1,107 @@
-<!DOCTYPE html>
-<html lang = "en">
-   <head></head>
-   <body>
-      
-      <h3>
-         <a href = "{{ url_for('showItems') }}">Item Submission History</a>
-      </h3>
-      
-      <hr/>
-      {%- for message in get_flashed_messages() %}
-         {{ message }}
-      {%- endfor %}
-		
-      <h3>Submit a <a href = "{{ url_for('submitItem') }}">new 
-         </a> item</h3>
-      
-      <table>
-         <thead>
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head></head>
+
+<body>
+
+    <h3>
+        <a href="{{ url_for('showItems') }}">Item Submission History</a>
+    </h3>
+
+    <hr />
+    {%- for message in get_flashed_messages() %}
+    {{ message }}
+    {%- endfor %}
+
+    <h3>Submit a <a href="{{ url_for('submitItem') }}">new
+        </a> item</h3>
+
+    <table>
+        <thead>
             <tr>
-               <th>Title</th>
-               <th>Image Address</th>
-               <th>Key Words</th>
-               <th>Time Limit</th>
+                <th>Title</th>
+                <th>Image Address</th>
+                <th>Key Words</th>
+                <th>Time Limit</th>
             </tr>
-         </thead>
-         
-         <tbody>
+        </thead>
+
+        <tbody>
+            {% if (current_user.user_type == "OU") %}
             {%for Item in Process_Items%}
-               <tr>
-                  <td>{{Item.title }}</td>
-                  <td>{{Item.image }}</td>
-                  <td>{{Item.key_words }}</td>
-                  <td>{{Item.time_limit }}</td>
-               </tr>
+            {% if (current_user.id == Item.seller_id) %}
+            <tr>
+                <td>{{Item.title }}</td>
+                <td>{{Item.image }}</td>
+                <td>{{Item.key_words }}</td>
+                <td>{{Item.time_limit }}</td>
+                {% endif %}
+            </tr>
             {% endfor %}
-         </tbody>
-      </table>
-      
-   </body>
+            {% else %}
+            <tr>
+                {%for Item in Process_Items%}
+                <td>{{Item.title }}</td>
+                <td>{{Item.image }}</td>
+                <td>{{Item.key_words }}</td>
+                <td>{{Item.time_limit }}</td>
+            </tr>
+
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+{% block body %}
+
+<body>
+    <h2 class="text-center pt-5">Pending Items</h2>
+    <br><br>
+    <table style="width:100%">
+        <tr>
+            {% for header in headers %}
+                {% if (header != 'password') %}
+                <th>{{ header }}</th>
+                {% endif %} 
+            {% endfor %}
+        </tr>
+        {% for item in pending %}
+        <tr>
+            <td>{{ item.id }} </td>
+            <td>{{ item.title }} </td>
+            <td>{{ item.image }} </td>
+            <td>{{ item.key_words }} </td>
+            <td>{{ item.seller_id }} </td>
+            <td>{{ item.time_limit }} </td>
+            <td>{{ item.status }} </td>
+            <td>
+                <form action = "{{ url_for('showItems') }}" method = "POST">
+                    <input id="item_container" name ="item_container" type="hidden" value="{{ item.id }}">
+                    <button class = "btn btn-primary" type="submit"> Review </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!-- JS Popper -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+{% endblock %}
+
 </html>

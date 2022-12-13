@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block body %}
+
+<body>
+    
+    <!-- JS Popper -->
+    
+    <div>
+          <!-- <form class="form-ratePage" method="POST" action="/ratePage">  -->
+            
+           <center><p></p> How would you rate your experience with us? (Worst to Best) </p></p></center> 
+            <br>
+        <center>
+            
+            <!-- <button class="btn btn-primary" type="1"> 1 Star </button>
+            <button class="btn btn-primary" type="2"> 2 Stars </button>
+            <button class="btn btn-primary" type="3"> 3 Stars </button>
+            <button class="btn btn-primary" type="4"> 4 Stars </button>
+            <button class="btn btn-primary" type="5"> 5 Stars </button> -->
+
+            <!-- <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+              <label class="form-check-label" for="inlineRadio1">1</label>
+            </div> -->
+
+            <!-- <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                <label class="form-check-label" for="inlineRadio1">1</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                <label class="form-check-label" for="inlineRadio2">2</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" >
+                <label class="form-check-label" for="inlineRadio3">3</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option4">
+                <label class="form-check-label" for="inlineRadio4">4</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="option5" >
+                <label class="form-check-label" for="inlineRadio5">5</label>
+              </div>
+        </center> 
+        <center> <button class="btn btn-primary" type="submit"> Submit Rate </button></center> -->
+        <!-- </form>  -->
+
+        <form class="form-ratePage approveForm" method="POST" action="/ratePage">
+          {{ form.hidden_tag() }}
+          {{ wtf.form_field(form.body) }}
+          {{form.choice.label}}<br>{{ wtf.form_field(form.choice) }}
+          <br>
+          <button class="btn btn-primary" type="submit"> Confirm </button>
+      </form>
+    </div>
+    
+   
+        </p>
+
+    <!-- <div>
+        <a href="{{ url_for('accountPage') }}" class="btn btn-primary accountBtn">{{ current_user.username }}'s Account</a>
+        <a href = "{{ url_for('logout') }}" type="button" class="btn btn-outline-primary">Log out</a>
+    </div> -->
+   
+</body>
+{% endblock %}
+
+</html>

@@ -9,6 +9,9 @@
     {% if (current_user.user_type == "OU") %}
     <a href="{{ url_for('submitItem') }}" class="btn btn-primary accountBtn">Submit Item</a>
     <a href="{{ url_for('fileComplaint') }}" class="btn btn-primary accountBtn">File a Complaint</a>
+    <a href="{{ url_for('ratePage') }}" class="btn btn-primary accountBtn">Rate</a>
+    <a href="{{ url_for('OUcomplaint') }}" class="btn btn-primary accountBtn">Complaint History</a>
+    <a href="{{ url_for('OUitems') }}" class="btn btn-primary accountBtn">Your Items Pending Approval</a>
     {% else %}
     <a href="{{ url_for('showItems') }}" class="btn btn-primary accountBtn">Approve Items</a>
     <a href="{{ url_for('showComplaints') }}" class="btn btn-primary accountBtn">Settle Complaints</a>

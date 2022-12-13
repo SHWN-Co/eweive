@@ -13,13 +13,16 @@
             {{ form.hidden_tag() }}
             {{ wtf.form_field(form.reason) }}
             <br>
-            
+           
             <button class="btn btn-primary" type="submit"> Submit Complaint </button>
+           
         </form>
+
     </div>
     
     {% else %} <p>
        <h3>
+        <!-- <a href = "{{ url_for('fileComplaint') }}">Complaints pending settlement</a>  -->
         <a href = "{{ url_for('showComplaints') }}">Complaints pending settlement</a>
      </h3>
         </p>
