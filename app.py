@@ -393,7 +393,7 @@ def searchPage():
     #     query = f'%{input}'
     #     filter_list = [Items.title.ilike(query), Items.key_words.ilike(query)]
     #     results = Items.query.filter(or_(*filter_list))
-    results = []
+    results = Items.query.filter(Items.id==0)
     if request.method == "POST": 
         input = request.form.get("input")
         query = f'%{input}%'
