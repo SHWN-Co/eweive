@@ -8,7 +8,7 @@
 <body>
 
     <h3>
-        <a href="{{ url_for('OUcomplaint') }}">Complaint History</a>
+        <a class="btn btn-primary" href="{{ url_for('OUcomplaint') }}">Complaint History</a>
     </h3>
 
     <hr />
@@ -17,8 +17,7 @@
     {%- endfor %}
     
      <h3>Submit a <a href = "{{ url_for('fileComplaint') }}">new</a> complaint</h3>  
-     <center>
-     <table>
+     <table class="table table-striped">
         <thead>
             
             <tr>
@@ -43,7 +42,6 @@
         
      
  </body>
-</center>
  </html>
 
 {% endblock %}

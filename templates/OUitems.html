@@ -8,7 +8,7 @@
 <body>
 
     <h3>
-        <a href="{{ url_for('OUitems') }}">Your Items Pending Approval</a>
+        <a class="btn btn-primary" href="{{ url_for('OUitems') }}">Your Items Pending Approval</a>
     </h3>
 
     <hr />
@@ -17,7 +17,7 @@
     {%- endfor %}
     
      <h3>Submit a <a href = "{{ url_for('submitItem') }}">new</a> item</h3>  
-     <table>
+     <table class="table table-striped">
         <thead>
             
             <tr>
