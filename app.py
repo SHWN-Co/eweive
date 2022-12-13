@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -239,13 +239,26 @@ def collectTransactionsUser():
     # this is for SUs only
     if request.method == "POST":
        # getting input with user = fUser in HTML form
-       user = request.form.get("fUser")
-    transactions = Transactions.query.filter((Transactions.seller_id==user) | (Transactions.buyer_id==user))
-    return render_template(
-        "accountPage.html",
-        transactions = transactions,
-        name=current_user.username
-    )
+        user = request.form.get("fUser")
+        timefield = request.form.get("fTime")
+        curDate = datetime.now()
+        if ((timefield != '') & (user != '')): # if both are filled
+            timePeriod = int(timefield) + 1 
+            queryDate = curDate - timedelta(days=timePeriod) 
+            transactions = Transactions.query.filter(((Transactions.seller_id==user) | (Transactions.buyer_id==user)) & (Transactions.date_and_time >= queryDate))
+        elif(timefield == ''):
+            transactions = Transactions.query.filter((Transactions.seller_id==user) | (Transactions.buyer_id==user))
+        elif(user == ''):
+            timePeriod = int(timefield) + 1 # user includes days
+            # current date: 2022-12-12 23:47:36.185863
+            queryDate = curDate - timedelta(days=timePeriod) 
+            transactions = Transactions.query.filter((Transactions.date_and_time >= queryDate))
+        return render_template(
+            "accountPage.html",
+            transactions = transactions,
+            name=current_user.username,
+            maxNumDays = curDate - datetime.min - timedelta(days=2)
+        )
 
 @app.route("/account/transactions-history", methods = ['GET', 'POST'])
 @login_required
