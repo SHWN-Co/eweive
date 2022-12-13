@@ -58,6 +58,7 @@ class Process_Items(db.Model, UserMixin):
     key_words = db.Column(db.Text, nullable=False )
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
+    description = db.Column(db.Text, nullable = False)
 
 class Items(db.Model, UserMixin):
     __tablename__='ITEMS'
@@ -68,6 +69,7 @@ class Items(db.Model, UserMixin):
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
     highest_bid = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.Text, nullable = False)
 
  
 class Transactions(db.Model, UserMixin):
@@ -247,7 +249,7 @@ def itemPage(id=0):
         end_date=display_item.time_limit,
         highest_bid=f'${display_item.highest_bid}',
         highest_bid_constraint=f'${display_item.highest_bid+1}',
-        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.")
+        item_description=display_item.description)
 
 @app.route("/report-item", methods = ['GET', 'POST'])
 def reportPage():

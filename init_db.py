@@ -140,9 +140,14 @@ def db_setup():
         VALUES('4522','1', 'too small' )
         ''')
 
-for i in range(6):
-    db_ex('''
-            INSERT INTO ITEMS(title, image, key_words, seller_id, highest_bid)
-            VALUES('TI-84 Plus CE Graphing Calculator','https://m.media-amazon.com/images/I/71yrLllDokL.jpg', 'calculator', '3','420');
-        ''')
+# for i in range(6):
+#     db_ex('''
+#             INSERT INTO ITEMS(title, image, key_words, seller_id, highest_bid)
+#             VALUES('TI-84 Plus CE Graphing Calculator','https://m.media-amazon.com/images/I/71yrLllDokL.jpg', 'calculator', '3','420');
+#         ''')
 
+# db_ex('''
+#     UPDATE ITEMS 
+#     SET description = "Electronically upgradeable graphing calculator allows you to have the most up-to-date functionality and software applications. Built-in MathPrint functionality allows you to input and view math symbols, formulas and stacked fractions exactly as they appear in textbooks. TI graph link offers increased capacity and speed. Advanced functions accessed through pull-down display menus. Horizontal and vertical split screen options. USB port for computer connectivity, unit-to-unit communication."
+#     WHERE key_words = 'calculator'
+#     ''')
