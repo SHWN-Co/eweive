@@ -55,6 +55,7 @@ class Process_Items(db.Model, UserMixin):
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
     status = db.Column(db.Text, nullable = False, default= "Pending")
+    description = db.Column(db.Text, nullable=False)
 
 class Items(db.Model, UserMixin):
     __tablename__='ITEMS'
@@ -65,6 +66,7 @@ class Items(db.Model, UserMixin):
     seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
     time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
     highest_bid = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.Text, nullable=False)
 
  
 class Transactions(db.Model, UserMixin):
@@ -136,6 +138,7 @@ class Users_Blacklist(db.Model, UserMixin):
     __tablename__='USERS_BLACKLIST'
     id=db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    email = db.Column(db.String(50), ForeignKey("USERS.email"), nullable=False)
 
 
 class LoginForm(FlaskForm):
@@ -153,6 +156,7 @@ class submitItemForm(FlaskForm):
     image = StringField('Image Address', validators=[InputRequired(), Length(min=6, max=80)])
     key_words = StringField('Key Words', validators=[InputRequired(), Length(min=2, max=80)])
     time_limit = DateTimeField('Time Limit', validators=[InputRequired()])
+    description = StringField('Description', validators=[InputRequired(), Length(min=2, max=80)])
  
 class complaintsForm(FlaskForm):
     reason = StringField('Reasoning', validators=[InputRequired(), Length(min=4, max=300)])
@@ -238,7 +242,7 @@ def submitItem():
     if form.validate_on_submit():
         # new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
         # db.session.add(new_user)
-            new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, seller_id=current_user.id, time_limit = form.time_limit.data)
+            new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, seller_id=current_user.id, time_limit = form.time_limit.data, description=form.description.data)
             # seller_id= current_user.id
             db.session.add(new_item)
             db.session.commit()
@@ -271,13 +275,13 @@ def finalizeItem(id=0):
     if form.validate_on_submit():
         if user:
             if (form.choice.data == 'Yes'):
-                user = Items(title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, highest_bid=0)
+                user = Items(title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, highest_bid=0, description=user.description)
                 db.session.add(user)
                 Process_Items.query.filter_by(id=id).delete()
                 db.session.commit()
             
             return redirect(url_for('showItems'))
-    return render_template('finalizeItem.html', id = id, title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, status=user.status, form = form)
+    return render_template('finalizeItem.html', id = id, title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, status=user.status,description=user.description, form = form)
 
 
 
@@ -301,7 +305,7 @@ def finalizeUser(id=0):
     if form.validate_on_submit():
         if user:
             if (form.choice.data == 'Yes'):
-                user = Users_Blacklist(user_id=current_user.id)
+                user = Users_Blacklist(user_id=user.id, email=user.email)
                 db.session.add(user)
                 User.query.filter_by(id=id).delete()
                 db.session.commit()
