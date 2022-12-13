@@ -80,8 +80,8 @@ class Transactions(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     date_and_time = db.Column(DateTime(timezone=True), server_default=func.now())
     item_id = db.Column(db.Integer,ForeignKey("ITEMS.id"), nullable=False)
-    buyer_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
-    seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
+    buyer_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
 
 class Bids(db.Model, UserMixin):
@@ -447,6 +447,9 @@ def itemPage(id=0):
 def placeBid(id=0):
     curDate = datetime.now()
     item = Items.query.filter_by(id=id).first() # just using the first item for updating the db
+    if item.seller_id == current_user.id:
+        flash('cant bid on your own item!')
+        return redirect(url_for('itemPage', id = item.id))
     if request.method == "POST":
        # getting input with user = fUser in HTML form
         highest_bid = item.highest_bid
@@ -746,3 +749,31 @@ def confirmReport():
             name=current_user.username,
             reportedItems = Sus_Reports.query.all()
         )
+
+@app.route("/itemsOnSale", methods = ['GET', 'POST'])
+@login_required
+def displayItemsOnSale():
+    id = current_user.id 
+    items = Items.query.filter_by(seller_id = id)
+    items_headers = Items.__table__.columns.keys()
+    now = datetime.now()
+    curr_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    return render_template('itemsOnSale.html', items = items, headers = items_headers)
+
+@app.route("/sellItemPage/<id>", methods = ['GET', 'POST'])
+@login_required
+def sellItemPage(id=0):
+    item = Items.query.filter_by(id=id).first()
+    if (id == 0 or not item): return redirect(url_for('displayItemsOnSale'))
+    allBids = Bids.query.filter(Bids.item_id==item.id).order_by(Bids.highest_bid.desc()).all()
+    if request.method == 'POST':
+        now = datetime.now()
+        bidder_id = request.form['bidder']
+        if (Transactions.query.filter_by(buyer_id=bidder_id).first()):
+            flash('already sold to this user')
+            return redirect(url_for('sellItemPage', id=item.id))
+        new_transaction = Transactions(item_id=item.id, buyer_id=bidder_id, seller_id=current_user.id,highest_bid=item.highest_bid)
+        db.session.add(new_transaction)
+        db.session.commit()
+        return redirect(url_for('displayItemsOnSale'))
+    return render_template('sellItem.html', item = item, allBids = allBids)

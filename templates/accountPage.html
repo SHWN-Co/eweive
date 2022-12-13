@@ -36,6 +36,7 @@
     <a href="{{ url_for('ratePage') }}" class="btn btn-primary accountBtn">Rate</a>
     <a href="{{ url_for('OUcomplaint') }}" class="btn btn-primary accountBtn">Complaint History</a>
     <a href="{{ url_for('OUitems') }}" class="btn btn-primary accountBtn">Your Items Pending Approval</a>
+    <a href="{{ url_for('displayItemsOnSale')}}" class="btn btn-primary accountBtn">View Your Items On Sale</a>
     {% else %}
     <a href="{{ url_for('showItems') }}" class="btn btn-primary accountBtn">Approve Items</a>
     <a href="{{ url_for('showComplaints') }}" class="btn btn-primary accountBtn">Settle Complaints</a>
