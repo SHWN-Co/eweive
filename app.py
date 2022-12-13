@@ -125,7 +125,7 @@ class Sus_Reports(db.Model, UserMixin):
 class Sus_Items(db.Model, UserMixin):
     __tablename__='SUS_ITEMS'
     id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    seller_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
     item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
 
 class Police_Reports(db.Model, UserMixin):
@@ -139,7 +139,7 @@ class Police_Reports(db.Model, UserMixin):
 class Users_Items_Blocklist(db.Model, UserMixin):
     __tablename__='USERS_ITEMS_BLOCKLIST'
     id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    seller_id=db.Column(db.Integer, ForeignKey("ITEMS.seller_id"), nullable=False)
     item_id= db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
 
 class Users_Blacklist(db.Model, UserMixin):
@@ -678,7 +678,7 @@ def approve_user(id=0):
 def collectTransactions():
     # this is for SUs only
     return render_template(
-        "accountPage.html",
+        "collectTransactionsHistory.html",
         transactions = Transactions.query.all(),
         name=current_user.username
     )
@@ -704,7 +704,7 @@ def collectTransactionsUser():
             queryDate = curDate - timedelta(days=timePeriod) 
             transactions = Transactions.query.filter((Transactions.date_and_time >= queryDate))
         return render_template(
-            "accountPage.html",
+            "collectTransactionsHistory.html",
             transactions = transactions,
             name=current_user.username,
             maxNumDays = curDate - datetime.min - timedelta(days=2)
@@ -716,7 +716,7 @@ def transactionsHistory():
     # this is for OUs only
     transactions = Transactions.query.filter((Transactions.seller_id==current_user.id) | (Transactions.buyer_id==current_user.id))
     return render_template(
-        "accountPage.html",
+        "collectTransactionsHistory.html",
         transactions = transactions,
         name=current_user.username
     )
@@ -743,31 +743,33 @@ def searchPage():
         results = results
     )
 
-@app.route("/account/collect-transaction-history/validate-reports", methods = ['GET', 'POST'])
+@app.route("/account/validate-reports", methods = ['GET', 'POST'])
 @login_required
 def validateReports():
     # this is for SUs only
     return render_template(
-        "accountPage.html",
+        "validateReports.html",
         transactions = Transactions.query.all(),
         name=current_user.username,
         reportedItems = Sus_Reports.query.all()
     )
 
 # needs fixing
-@app.route("/account/collect-transaction-history/user/confirm", methods = ['GET', 'POST'])
+@app.route("/account/validate-reports/confirm", methods = ['GET', 'POST'])
 @login_required
 def confirmReport():
     # this is for SUs only
     if request.method == "POST":
-       # getting input with user = fUser in HTML form
-        itemReported = request.form.get("fitemId")
-        Sus_Items(item_id=itemReported) # add to sus items
-        db.session.add(itemReported)
-        Items.query.filter_by(item_id=itemReported).delete()
+        # getting input with user = fUser in HTML form
+        itemReported = request.form.get("fitemId") # id of what you want to delete from items
+        # using item id, find the seller
+        sellersid = Items.query.filter(Items.id==itemReported).first().seller_id
+        usertoBList = Users_Items_Blocklist(seller_id=sellersid, item_id=itemReported) # add the user to items blocklist
+        db.session.add(usertoBList)
+        Sus_Reports.query.filter_by(item_id=itemReported).delete() # delete from sus reports
         db.session.commit()
         return render_template(
-            "accountPage.html",
+            "validateReports.html",
             transactions = Transactions.query.all(),
             name=current_user.username,
             reportedItems = Sus_Reports.query.all()
