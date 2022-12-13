@@ -1,29 +1,21 @@
 <!DOCTYPE html>
 <html>
-{% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% block body %}
 
 <body>
-    <!-- Insert form here -->
-    <h2 class="text-center pt-5">Login</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <a class="close" href="{{ url_for('login') }}">×</a>
-            <ul class=flashes>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form class="form-login signlogform" method="POST" action="/login">
+    <h2 class="text-center pt-5">Approve User</h2>
+    <p>{{ name }}</p>
+    <p>{{ phone }}</p>
+    <p>{{ email }}</p>
+    <br>
+    <form class="form-approveUser approveForm" method="POST" action="/reviewApplications/{{ id }}">
         {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.body) }}
+        {{form.choice.label}}<br>{{ wtf.form_field(form.choice) }}
         <br>
-        {{ wtf.form_field(form.password) }}
-        <br>
-        <button class="btn btn-primary" type="submit"> Login </button>
+        <button class="btn btn-primary" type="submit"> Confirm </button>
     </form>
     <!-- JS Popper -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

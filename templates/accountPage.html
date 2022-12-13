@@ -4,6 +4,35 @@
 {% block body %}
 
 <body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <a class="close" href="{{ url_for('accountPage') }}">×</a>
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <p>Hi, {{ name }}! This is your account page.</p>
+    <p>{{ current_user.username }}</p>
+    <p>{{ current_user.email }}</p>
+    <p>{{ current_user.phone_number }}</p>
+    {% if (current_user.cc_number == None) %}
+    <p> No Credit Card Added </p>
+    {% else %}
+    <p> Credit Card Added </p>
+    {% endif %} 
+    <p> Balance: ${{ balance }}</p>
+    <a href="{{ url_for('changeInfo') }}" class="btn btn-primary">Change User Info</a>
+    <a href="{{ url_for('changePass') }}" class="btn btn-primary">Change Password</a>
+    <a href="{{ url_for('updateCard') }}" class="btn btn-primary">Add or Update Card</a>
+    <br><br>
+    <a href="{{ url_for('withdraw') }}" class="btn btn-primary">Withdraw Money</a>
+    <a href="{{ url_for('deposit') }}" class="btn btn-primary">Deposit Money</a>
+    {% if current_user.user_type == 'SU' %}
+    <a href="{{ url_for('approveApps') }}" class ="btn btn-primary"> Approve OU Applications</a>
+    {% endif %}
     <h3 class="px-5 pt-3">Hello, {{ name }}!</h3>
     <div class="d-flex flex-fill">
         <div class="nav flex-column nav-pills me-3 px-5 pt-3" id="v-pills-tab" role="tablist"
