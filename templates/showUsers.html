@@ -4,7 +4,7 @@
 {% block body %}
 
 <body>
-    <h2 class="text-center pt-5">Pending Items</h2>
+    <h2 class="text-center pt-5">All Users</h2>
     <br><br>
     <table style="width:100%">
         <tr>
@@ -17,16 +17,15 @@
         {% for item in pending %}
         <tr>
             <td>{{ item.id }} </td>
-            <td>{{ item.title }} </td>
-            <td>{{ item.image }} </td>
-            <td>{{ item.key_words }} </td>
-            <td>{{ item.seller_id }} </td>
-            <td>{{ item.time_limit }} </td>
-            <td>{{ item.status }} </td>
+            <td>{{ item.username }} </td>
+            <td>{{ item.user_type }} </td>
+            <td>{{ item.phone_number }} </td>
+            <td>{{ item.cc_number }} </td>
+            <td>{{ item.email }} </td>
             <td>
-                <form action = "{{ url_for('showItems') }}" method = "POST">
+                <form action = "{{ url_for('showUsers') }}" method = "POST">
                     <input id="item_container" name ="item_container" type="hidden" value="{{ item.id }}">
-                    <button class = "btn btn-primary" type="submit"> Review </button>
+                    <button class = "btn btn-primary" type="submit"> Remove </button>
                 </form>
             </td>
         </tr>

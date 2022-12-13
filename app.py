@@ -172,6 +172,10 @@ class postForm2(FlaskForm):
     body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
     choice = RadioField('Approve?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
 
+class postForm3(FlaskForm):
+    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
+    choice = RadioField('Remove?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
+
 
 app.app_context().push()
 
@@ -276,6 +280,34 @@ def finalizeItem(id=0):
     return render_template('finalizeItem.html', id = id, title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, status=user.status, form = form)
 
 
+
+@app.route("/finalizeUser", methods = ['GET', 'POST'])
+@login_required
+def showUsers():
+    if current_user.user_type == 'OU':
+       return redirect(url_for('home'))
+    pending = User.query.all()
+    pending_headers = User.__table__.columns.keys()
+    if request.method == 'POST':
+        user_id = request.form['item_container']
+        return redirect(url_for('finalizeUser', id = user_id))
+    return render_template('showUsers.html', pending = pending, headers = pending_headers)
+
+@app.route("/finalizeUser/<id>", methods = ['GET', 'POST'])
+@login_required
+def finalizeUser(id=0):
+    user = User.query.filter_by(id=id).first()
+    form = postForm3()
+    if form.validate_on_submit():
+        if user:
+            if (form.choice.data == 'Yes'):
+                user = Users_Blacklist(user_id=current_user.id)
+                db.session.add(user)
+                User.query.filter_by(id=id).delete()
+                db.session.commit()
+            
+            return redirect(url_for('showUsers'))
+    return render_template('finalizeUser.html', id = id, username = user.username, user_type = user.user_type,phone_number=user.phone_number,cc_number=user.cc_number, email=user.email, form = form)
 
 
 
