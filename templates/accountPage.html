@@ -43,6 +43,111 @@
     {% endif %}    {% if current_user.user_type == 'SU' %}
     <a href="{{ url_for('approveApps') }}" class ="btn btn-primary"> Approve OU Applications</a>
     {% endif %}
+    <h3 class="px-5 pt-3">Hello, {{ name }}!</h3>
+    <div class="d-flex flex-fill">
+        <div class="nav flex-column nav-pills me-3 px-5 pt-3" id="v-pills-tab" role="tablist"
+            aria-orientation="vertical">
+            {% if (current_user.user_type == "SU") %}
+            <button href="{{ url_for('collectTransactions') }}" class="nav-link active" id="collect-transactions-tab"
+                data-bs-toggle="pill" data-bs-target="#collecttransactions" type="button" role="tab"
+                aria-controls="collecttransactions" aria-selected="true">Collect Transactions History</button>
+            <button href="{{ url_for('validateReports') }}" class="nav-link {validateActive}" id="validate-reports-tab"
+                data-bs-toggle="pill" data-bs-target="#validatereports" type="button" role="tab"
+                aria-controls="validatereports" aria-selected="true">Validate Reports</button>
+            {% else %}
+            <button class="nav-link active" id="transactions-tab" data-bs-toggle="pill" data-bs-target="#transactions"
+                type="button" role="tab" aria-controls="transactions" aria-selected="true">Transactions History</button>
+            {% endif %}
+            <!-- <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile"
+                type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</button> -->
+        </div>
+        <div class="tab-content pt-3 col-8">
+            <div class="tab-pane fade show active" id="collecttransactions" role="tabpanel"
+                aria-labelledby="collect-transactions-tab" tabindex="0">
+                {% if (current_user.user_type == "SU") %}
+                <div class="row">
+                    <div class="col-3">
+                        <a href="{{ url_for('collectTransactions') }}" class="btn btn-outline-secondary mb-2">View All
+                            Transactions</a>
+                    </div>
+                    <div class="col-6">
+                        <form action="{{ url_for('collectTransactionsUser')}}" method="post">
+                            <div class="input-group mb-3">
+                                <input class="form-control col-4" type="text" id="user" name="fUser"
+                                    placeholder="User ID">
+                                <input class="form-control col-4" type="number" step="1" min="0" max={{maxNumDays}}
+                                    id="user" name="fTime" placeholder="Time Period (Days)">
+                                <button type="submit" class="btn btn-outline-secondary">Search</button>
+                            </div>
+
+                    </div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('transactionsHistory') }}" class="btn btn-outline-secondary mb-2">View
+                    My Transactions</a>
+                {% endif %}
+                <table class="table table-hover pr-2">
+                    <thead>
+                        <tr>
+                            <th class="col-2">ID</th>
+                            <th class="col-3">Date and Time</th>
+                            <th>Item ID</th>
+                            <th>Buyer ID</th>
+                            <th>Seller ID</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.id }}</td>
+                            <td>{{ transaction.date_and_time }}</td>
+                            <td>{{ transaction.item_id }}</td>
+                            <td>{{ transaction.buyer_id }}</td>
+                            <td>{{ transaction.seller_id }}</td>
+                            <td>{{ transaction.highest_bid }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if (current_user.user_type == "SU") %}
+            <div class="tab-pane fade" id="validatereports" role="tabpanel" tabindex="0">
+                <div class="row">
+                    <div class="col-3">
+                        <a href="{{ url_for('validateReports') }}" class="btn btn-outline-secondary mb-2">View All Reports</a>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <form action="{{ url_for('confirmReport')}}" method="post">
+                        <div class="input-group mb-3">
+                            <input class="form-control col-4" type="text" id="user" name="fitemId"
+                                placeholder="Item ID">
+                            <button type="submit" class="btn btn-outline-secondary">Confirm Report</button>
+                        </div>
+
+                </div>
+                <table class="table table-hover pr-2">
+                    <thead>
+                        <tr>
+                            <th class="col-2">ID</th>
+                            <th class="col-3">Item ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reportItem in reportedItems %}
+                        <tr>
+                            <td>{{ reportItem.id }}</td>
+                            <td>{{ reportItem.item_id }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
 </body>
 {% endblock %}
 
