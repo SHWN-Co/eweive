@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, RadioField, SearchField
 from wtforms.validators import InputRequired, Email, Length, Regexp
-from datetime import datetime
+from datetime import datetime, timedelta
 
 currencyInputRegex = r"^[0-9]+\.[0-9]{2}$"
 numberRegex = r"^[0-9]+$"
@@ -17,7 +17,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'bruhmoment'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'eweive.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'eweive2.db')
 Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -81,11 +81,13 @@ class Transactions(db.Model, UserMixin):
     seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False, unique=True)
     highest_bid = db.Column(db.Integer, nullable=False)
 
-class Bid(db.Model, UserMixin):
-    __tablename__= 'BID'
+class Bids(db.Model, UserMixin):
+    __tablename__= 'BIDS'
     id = db.Column(db.Integer, primary_key = True)
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
+    bidder_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    time_stamp = db.Column(DateTime(timezone=True), server_default=func.now())
 
 class Rate(enum.Enum):
     one = 1 
@@ -251,10 +253,42 @@ def itemPage(id=0):
         highest_bid_constraint=f'${display_item.highest_bid+1}',
         item_description=display_item.description)
 
-@app.route("/report-item", methods = ['GET', 'POST'])
-def reportPage():
+@app.route("/item/place-bid", methods = ['GET','POST'])
+def placeBid():
+    curDate = datetime.now()
+    item = db.session.query(Items).first() # just using the first item for updating the db
+    if request.method == "POST":
+       # getting input with user = fUser in HTML form
+        highest_bid = item.highest_bid
+        bid = int(request.form.get("fBid"))
+        db.session.query(Items).filter(Items.id == 1).update({'highest_bid': bid})
+        newBid = Bids(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
+        db.session.add(newBid)   
+        db.session.commit()
+        highest_bid = item.highest_bid # for frontend, have to update the actual item and add to bids table
+    allBids = Bids.query.filter(Bids.item_id==item.id).order_by(Bids.highest_bid.desc()).all()
     return render_template(
-        "reportPage.html"
+        "Siemaitem.html",
+        image_address="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
+        item_title=item.title,
+        seller_id=item.seller_id,
+        time_left=(item.time_limit - curDate).days,
+        deadline = item.time_limit.date(),
+        highest_bid=highest_bid,
+        highest_bid_constraint=highest_bid+1,
+        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.",
+        allBids=allBids)
+
+
+@app.route("/report-item", methods = ['GET', 'POST'])
+def sendReport():
+    item = db.session.query(Items).first()
+    newReport = Sus_Reports(item_id = item.id)
+    db.session.add(newReport)   
+    db.session.commit()
+    return render_template(
+        "reportPage.html",
+        itemName = item.title
     )
 
 @app.route("/account")
@@ -385,6 +419,55 @@ def approve_user(id=0):
     return render_template('approveUser.html', id = id, name = user.username, phone = user.phone_number, email = user.email, form = form)
 
 
+@app.route("/account/collect-transaction-history", methods = ['GET', 'POST'])
+@login_required
+def collectTransactions():
+    # this is for SUs only
+    return render_template(
+        "accountPage.html",
+        transactions = Transactions.query.all(),
+        name=current_user.username
+    )
+
+@app.route("/account/collect-transaction-history/user", methods = ['GET', 'POST'])
+@login_required
+def collectTransactionsUser():
+    # this is for SUs only
+    if request.method == "POST":
+       # getting input with user = fUser in HTML form
+        user = request.form.get("fUser")
+        timefield = request.form.get("fTime")
+        curDate = datetime.now()
+        if ((timefield != '') & (user != '')): # if both are filled
+            timePeriod = int(timefield) + 1 
+            queryDate = curDate - timedelta(days=timePeriod) 
+            transactions = Transactions.query.filter(((Transactions.seller_id==user) | (Transactions.buyer_id==user)) & (Transactions.date_and_time >= queryDate))
+        elif(timefield == ''):
+            transactions = Transactions.query.filter((Transactions.seller_id==user) | (Transactions.buyer_id==user))
+        elif(user == ''):
+            timePeriod = int(timefield) + 1 # user includes days
+            # current date: 2022-12-12 23:47:36.185863
+            queryDate = curDate - timedelta(days=timePeriod) 
+            transactions = Transactions.query.filter((Transactions.date_and_time >= queryDate))
+        return render_template(
+            "accountPage.html",
+            transactions = transactions,
+            name=current_user.username,
+            maxNumDays = curDate - datetime.min - timedelta(days=2)
+        )
+
+@app.route("/account/transactions-history", methods = ['GET', 'POST'])
+@login_required
+def transactionsHistory():
+    # this is for OUs only
+    transactions = Transactions.query.filter((Transactions.seller_id==current_user.id) | (Transactions.buyer_id==current_user.id))
+    return render_template(
+        "accountPage.html",
+        transactions = transactions,
+        name=current_user.username
+    )
+
+
 @app.route("/search", methods = ['GET', 'POST'])
 def searchPage():
     # form = searchForm()
@@ -403,6 +486,36 @@ def searchPage():
         "search.html",
         image="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
         item_title="Vincent Van Gogh Replica Painting Sunflowers",
-        highest_bid="$100.00",
+        highest_bid=db.session.query(Items).first().highest_bid,
         results = results
     )
+
+@app.route("/account/collect-transaction-history/validate-reports", methods = ['GET', 'POST'])
+@login_required
+def validateReports():
+    # this is for SUs only
+    return render_template(
+        "accountPage.html",
+        transactions = Transactions.query.all(),
+        name=current_user.username,
+        reportedItems = Sus_Reports.query.all()
+    )
+
+# needs fixing
+@app.route("/account/collect-transaction-history/user/confirm", methods = ['GET', 'POST'])
+@login_required
+def confirmReport():
+    # this is for SUs only
+    if request.method == "POST":
+       # getting input with user = fUser in HTML form
+        itemReported = request.form.get("fitemId")
+        Sus_Items(item_id=itemReported) # add to sus items
+        db.session.add(itemReported)
+        Items.query.filter_by(item_id=itemReported).delete()
+        db.session.commit()
+        return render_template(
+            "accountPage.html",
+            transactions = Transactions.query.all(),
+            name=current_user.username,
+            reportedItems = Sus_Reports.query.all()
+        )

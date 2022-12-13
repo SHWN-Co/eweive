@@ -1,6 +1,6 @@
 import sqlite3
 
-file = 'eweive.db'
+file = 'eweive2.db'
 
 def db_ex(cmd):
     db = sqlite3.connect(file)
@@ -151,3 +151,9 @@ def db_setup():
 #     SET description = "Electronically upgradeable graphing calculator allows you to have the most up-to-date functionality and software applications. Built-in MathPrint functionality allows you to input and view math symbols, formulas and stacked fractions exactly as they appear in textbooks. TI graph link offers increased capacity and speed. Advanced functions accessed through pull-down display menus. Horizontal and vertical split screen options. USB port for computer connectivity, unit-to-unit communication."
 #     WHERE key_words = 'calculator'
 #     ''')
+
+# db_ex(
+#     '''
+#     INSERT INTO USERS(username, password, user_type, email, balance) VALUES("Superuser","superuser1234","SU", "su@gmail.com", 0)
+#     '''
+# )
