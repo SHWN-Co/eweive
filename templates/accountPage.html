@@ -42,6 +42,7 @@
     <br><br>
     <a href="{{ url_for('OUitems') }}" class="btn btn-primary accountBtn">Your Items Pending Approval</a>
     <a href="{{ url_for('displayItemsOnSale')}}" class="btn btn-primary accountBtn">View Your Items On Sale</a>
+    <br><br>
     <a href="{{ url_for('transactionsHistory') }}" class="btn btn-primary">View My Transactions</a>
     {% else %}
     <a href="{{ url_for('showItems') }}" class="btn btn-primary accountBtn">Approve Items</a>
