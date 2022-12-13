@@ -76,10 +76,12 @@ class Transactions(db.Model, UserMixin):
     highest_bid = db.Column(db.Integer, nullable=False)
 
 class Bid(db.Model, UserMixin):
-    __tablename__= 'BID'
+    __tablename__= 'BIDS'
     id = db.Column(db.Integer, primary_key = True)
     item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
     highest_bid = db.Column(db.Integer, nullable=False)
+    bidder_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
+    time_stamp = db.Column(DateTime(timezone=True), server_default=func.now())
 
 class Rate(enum.Enum):
     one = 1 
@@ -199,15 +201,43 @@ def logout():
 
 @app.route("/item", methods = ['GET','POST'])
 def itemPage():
+    item = db.session.query(Items).first() # just using the first item for updating the db
+    # if the highest bid ends in two 0s, we have to format it with '.2f'
+    # select highest_bid from Items where id=1
+    highest_bid = item.highest_bid
     return render_template(
-        "item.html",
+        "Siemaitem.html",
         image_address="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
-        item_title="Vincent Van Gogh Replica Painting Sunflowers",
-        seller_id="342",
-        end_date="December 14, 2022",
-        highest_bid="$100.00",
-        highest_bid_constraint="$101.00",
+        item_title=item.title,
+        seller_id=item.id,
+        time_left="December 14, 2022",
+        highest_bid=highest_bid,
+        highest_bid_constraint=highest_bid+1,
         item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.")
+
+@app.route("/item/place-bid", methods = ['GET','POST'])
+def placeBid():
+    curDate = datetime.now()
+    item = db.session.query(Items).first() # just using the first item for updating the db
+    if request.method == "POST":
+       # getting input with user = fUser in HTML form
+        highest_bid = item.highest_bid
+        bid = int(request.form.get("fBid"))
+        db.session.query(Items).filter(Items.id == 1).update({'highest_bid': bid})
+        newBid = Bid(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
+        db.session.add(newBid)   
+        db.session.commit()
+        highest_bid = item.highest_bid # for frontend, have to update the actual item and add to bids table
+    return render_template(
+        "Siemaitem.html",
+        image_address="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
+        item_title=item.title,
+        seller_id=item.seller_id,
+        time_left="December 14, 2022",
+        highest_bid=highest_bid,
+        highest_bid_constraint=highest_bid+1,
+        item_description="Van Gogh’s paintings of Sunflowers are among his most famous. He did them in Arles, in the south of France, in 1888 and 1889. Vincent painted a total of five large canvases with sunflowers in a vase, with three shades of yellow ‘and nothing else’. In this way, he demonstrated that it was possible to create an image with numerous variations of a single colour, without any loss of eloquence.")
+
 
 @app.route("/report-item", methods = ['GET', 'POST'])
 def reportPage():
@@ -278,5 +308,5 @@ def searchPage():
         "search.html",
         image="https://iiif.micr.io/TZCqF/full/1280,/0/default.jpg",
         item_title="Vincent Van Gogh Replica Painting Sunflowers",
-        highest_bid="$100.00"
+        highest_bid=db.session.query(Items).first().highest_bid
     )
