@@ -152,8 +152,8 @@ def db_setup():
 #     WHERE key_words = 'calculator'
 #     ''')
 
-db_ex(
-    '''
-    INSERT INTO USERS(username, password, user_type, email, balance) VALUES("Superuser","superuser1234","SU", "su@gmail.com", 0)
-    '''
-)
+# db_ex(
+#     '''
+#     INSERT INTO USERS(username, password, user_type, email, balance) VALUES("Superuser","superuser1234","SU", "su@gmail.com", 0)
+#     '''
+# )
