@@ -7,6 +7,16 @@
 <body>
     <!-- Insert form here -->
     <h2 class="text-center pt-5">Login</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <a class="close" href="{{ url_for('login') }}">×</a>
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     <form class="form-login signlogform" method="POST" action="/login">
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.username) }}
