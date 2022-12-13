@@ -4,6 +4,7 @@
 {% block body %}
 
 <body>
+    <div class="p-5">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <a class="close" href="{{ url_for('accountPage') }}">×</a>
@@ -14,10 +15,10 @@
             </ul>
         {% endif %}
     {% endwith %}
-    <p>Hi, {{ name }}! This is your account page.</p>
-    <p>{{ current_user.username }}</p>
-    <p>{{ current_user.email }}</p>
-    <p>{{ current_user.phone_number }}</p>
+    <p>Hi, {{ name }}! This is your account page, where you can interact with the site.</p>
+    <p>Name: {{ current_user.username }}</p>
+    <p>Email: {{ current_user.email }}</p>
+    <p>Phone Number: {{ current_user.phone_number }}</p>
     {% if (current_user.cc_number == None) %}
     <p> No Credit Card Added </p>
     {% else %}
@@ -30,12 +31,15 @@
     <br><br>
     <a href="{{ url_for('withdraw') }}" class="btn btn-primary">Withdraw Money</a>
     <a href="{{ url_for('deposit') }}" class="btn btn-primary">Deposit Money</a>
+    <br><br>
     {% if (current_user.user_type == "OU") %}
     <a href="{{ url_for('submitItem') }}" class="btn btn-primary accountBtn">Submit Item</a>
+    <a href="{{ url_for('OUitems') }}" class="btn btn-primary accountBtn">Your Items Pending Approval</a>
+    <br><br>
     <a href="{{ url_for('fileComplaint') }}" class="btn btn-primary accountBtn">File a Complaint</a>
     <a href="{{ url_for('ratePage') }}" class="btn btn-primary accountBtn">Rate</a>
     <a href="{{ url_for('OUcomplaint') }}" class="btn btn-primary accountBtn">Complaint History</a>
-    <a href="{{ url_for('OUitems') }}" class="btn btn-primary accountBtn">Your Items Pending Approval</a>
+    <br><br>
     <a href="{{ url_for('transactionsHistory') }}" class="btn btn-primary">View My Transactions</a>
     {% else %}
     <a href="{{ url_for('showItems') }}" class="btn btn-primary accountBtn">Approve Items</a>
@@ -46,6 +50,7 @@
     <a href="{{ url_for('collectTransactions') }}" class ="btn btn-primary">Collect Transactions History</a>
     <a href="{{ url_for('validateReports') }}" class ="btn btn-primary">Validate Item Reports</a>
     {% endif %}
+</div>
 </body>
 {% endblock %}
 

@@ -1,3 +1,6 @@
+#thebody {
+    margin: 10px;
+}
 .navbar {
     --bs-navbar-padding-x: 15px;
 }
@@ -49,5 +52,8 @@
 
 .bidsTable {
     height: 250px;
+    width: 90%;
+    padding-left: 10%;
+    padding-top: 15px;
     overflow-y: auto;
 }
