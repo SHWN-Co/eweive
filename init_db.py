@@ -1,6 +1,6 @@
 import sqlite3
 
-file = 'eweive2.db'
+file = 'eweivenew.db'
 
 def db_ex(cmd):
     db = sqlite3.connect(file)
