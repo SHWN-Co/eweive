@@ -318,3 +318,33 @@ def searchPage():
         item_title="Vincent Van Gogh Replica Painting Sunflowers",
         highest_bid=db.session.query(Items).first().highest_bid
     )
+
+@app.route("/account/collect-transaction-history/validate-reports", methods = ['GET', 'POST'])
+@login_required
+def validateReports():
+    # this is for SUs only
+    return render_template(
+        "accountPage.html",
+        transactions = Transactions.query.all(),
+        name=current_user.username,
+        reportedItems = Sus_Reports.query.all()
+    )
+
+# needs fixing
+@app.route("/account/collect-transaction-history/user/confirm", methods = ['GET', 'POST'])
+@login_required
+def confirmReport():
+    # this is for SUs only
+    if request.method == "POST":
+       # getting input with user = fUser in HTML form
+        itemReported = request.form.get("fitemId")
+        Sus_Items(item_id=itemReported) # add to sus items
+        db.session.add(itemReported)
+        Items.query.filter_by(item_id=itemReported).delete()
+        db.session.commit()
+        return render_template(
+            "accountPage.html",
+            transactions = Transactions.query.all(),
+            name=current_user.username,
+            reportedItems = Sus_Reports.query.all()
+        )
