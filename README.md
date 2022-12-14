@@ -1,37 +1,36 @@
 # eweive
+This is Team M's Python Flask project to create an online marketplace site.
+
+To clone repo, use the following in the terminal          
+```bash
+git clone git@github.com:SHWN-Co/eweive.git  
+```    
+
 <h1>Set-up instructions:</h1>
 
-1. Have python installed on your computer
-2. Create an environment for the project:
+1. Install `Python 3.10.8` on your computer if it is not 
+2. Make sure to have `pip` installed
+3. Create an virtual environment in the cloned repository and activate it:
+```bash
+# Linux
+sudo apt-get install python3-venv # If needed
+python3 -m venv .venv
+source .venv/bin/activate
 
-        # Linux
-        sudo apt-get install python3-venv # If needed
-        python3 -m venv .venv
-        source .venv/bin/activate
+# macOS
+python3 -m venv .venv
+source .venv/bin/activate
 
-        # macOS
-        python3 -m venv .venv
-        source .venv/bin/activate
+# Windows
+py -3 -m venv .venv
+.venv\scripts\activate
+```
 
-        # Windows
-        py -3 -m venv .venv
-        .venv\scripts\activate
-
-3. clone the repository 
-4. In your terminal, run:
-
-        % python
-        
-        >>> from app import db
-        
-        >>> db.createAll()
-        
-5. Hint: use the init_db.py file to create a superuser. 
-
-        db_ex(
-            '''
-            INSERT INTO USERS(username, password, user_type, email, balance) VALUES("Superuser","superuser1234","SU", "su@gmail.com", 0)
-            '''
-        )
- 
-6. run the app using `python -m flask --debug run` for automatic refresh.
+4. To install required packages, do the following in the terminal:
+```bash
+pip install -r requirements.txt
+```  
+5. To run the app, type into the terminal:
+```bash
+python -m flask run
+```  
