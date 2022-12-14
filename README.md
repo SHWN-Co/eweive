@@ -34,3 +34,10 @@ pip install -r requirements.txt
 ```bash
 python -m flask run
 ```  
+
+Note: You may login as a Super User with the folliwng credentials:
+
+Username: Superuser
+
+Password: superuser1234
+
