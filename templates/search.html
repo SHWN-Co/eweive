@@ -16,7 +16,7 @@
             <div class="col-3 mb-3">
                 <img class="itemsInSearch mx-auto d-block mb-3 mt-2" src="{{result.image}}">
                 <a href="{{ url_for('itemPage', id = result.id) }}" style="text-align:center"
-                    class="mt-3 text-decoration-none text-dark">{{result.title}}<br><strong>${{result.highest_bid}}</strong></a>
+                    class="mt-3 text-decoration-none text-dark">{{result.title}}<br><strong>${{result.highest_bid }}</strong></a>
             </div>
 
             {% endfor %}

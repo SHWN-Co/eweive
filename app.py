@@ -1,16 +1,9 @@
-import enum
-from flask import Flask, render_template, request, url_for, redirect, session, flash
-from sqlalchemy import DateTime, Enum, ForeignKey, func, Integer, or_
+from flask import Flask, render_template, request, url_for, redirect, flash
+from sqlalchemy import or_
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, DateTimeField, TextAreaField, RadioField, SearchField, RadioField, TextAreaField
-from wtforms.validators import InputRequired, Email, Length, Regexp
 from datetime import datetime, timedelta
-
-currencyInputRegex = r"^[0-9]+\.[0-9]{2}$"
-numberRegex = r"^[0-9]+$"
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -24,221 +17,30 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-class User(db.Model, UserMixin):
-    __tablename__ = 'USERS'
-    __table_args__ = {'extend_existing':True}
-    id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(20), unique = True, nullable = False)
-    password = db.Column(db.String(80), nullable = False)
-    user_type = db.Column(db.String(10), nullable = False)
-    phone_number = db.Column(db.String(100))
-    cc_number = db.Column(db.String(100))
-    email = db.Column(db.String(50), nullable = False, unique = True)
-    balance = db.Column(db.Integer, nullable = False)
-    def get_id(self):
-        return self.id
-
-class OUApp(db.Model):
-    __tablename__ = 'OUAPPLICATIONS'
-    __table_args__ = {'extend_existing':True}
-    id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(20), unique = True, nullable = False)
-    password = db.Column(db.String(80), nullable = False)
-    user_type = db.Column(db.String(10), nullable = False)
-    phone_number = db.Column(db.String(100))
-    email = db.Column(db.String(50), nullable = False, unique = True)
-    def get_id(self):
-        return self.id
-
-class Process_Items(db.Model, UserMixin):
-    __tablename__='PROCESS_ITEMS'
-    id=db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.Text, nullable=False)
-    image = db.Column(db.Text, nullable=False)
-    key_words = db.Column(db.Text, nullable=False )
-    seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
-    time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
-    status = db.Column(db.Text, nullable = False, default= "Pending")
-    description = db.Column(db.Text, nullable=False)
-    description = db.Column(db.Text, nullable = False)
-
-class Items(db.Model, UserMixin):
-    __tablename__='ITEMS'
-    id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.Text, nullable=False)
-    image = db.Column(db.Text, nullable=False)
-    key_words = db.Column(db.Text, nullable=False )
-    seller_id = db.Column(db.Integer,ForeignKey("USERS.id"))
-    time_limit = db.Column(DateTime(timezone=True), server_default=func.now())
-    highest_bid = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    description = db.Column(db.Text, nullable = False)
-
- 
-class Transactions(db.Model, UserMixin):
-    __tablename__= 'TRANSACTIONS'
-    id = db.Column(db.Integer, primary_key = True)
-    date_and_time = db.Column(DateTime(timezone=True), server_default=func.now())
-    item_id = db.Column(db.Integer,ForeignKey("ITEMS.id"), nullable=False)
-    buyer_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    seller_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    highest_bid = db.Column(db.Integer, nullable=False)
-
-class Bids(db.Model, UserMixin):
-    __tablename__= 'BIDS'
-    id = db.Column(db.Integer, primary_key = True)
-    item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
-    highest_bid = db.Column(db.Integer, nullable=False)
-    bidder_id = db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    time_stamp = db.Column(DateTime(timezone=True), server_default=func.now())
-
-# class Rate(enum.Enum):
-#     one = 1 
-#     two = 2
-#     three = 3
-#     four = 4
-#     five = 5 
-
-
-class Give_Rating(db.Model, UserMixin):
-    __tablename__= 'RATINGS'
-    id= db.Column(db.Integer, primary_key=True)
-    trans_id=db.Column(db.Integer, ForeignKey("TRANSACTIONS.id"), nullable=False)
-    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    item_id = db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
-    #rating = db.Column(Enum(Rate), nullable=False)
-    rating= db.Column(db.Integer, nullable=False)
-    
-
-class Complaints(db.Model, UserMixin):
-    __tablename__='COMPLAINTS'
-    id= db.Column(db.Integer, primary_key = True)
-    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    complaint_cnt=db.Column(db.Integer, nullable=False)
-    reason=db.Column(db.Text, nullable=False)
-
-class Sus_Reports(db.Model, UserMixin):
-    __tablename__='SUS_REPORTS'
-    id=db.Column(db.Integer, primary_key=True)
-    item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
-
-class Sus_Items(db.Model, UserMixin):
-    __tablename__='SUS_ITEMS'
-    id=db.Column(db.Integer, primary_key=True)
-    seller_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
-
-class Police_Reports(db.Model, UserMixin):
-    __tablename__='POLICE_REPORTS'
-    id=db.Column(db.Integer, primary_key=True)
-    date_and_time=db.Column(DateTime(timezone=True), server_default=func.now())
-    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    report_id=db.Column(db.Integer, ForeignKey("SUS_REPORTS.id"), nullable=False)
-    item_id=db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
-
-class Users_Items_Blocklist(db.Model, UserMixin):
-    __tablename__='USERS_ITEMS_BLOCKLIST'
-    id=db.Column(db.Integer, primary_key=True)
-    seller_id=db.Column(db.Integer, ForeignKey("ITEMS.seller_id"), nullable=False)
-    item_id= db.Column(db.Integer, ForeignKey("ITEMS.id"), nullable=False)
-
-class Users_Blacklist(db.Model, UserMixin):
-    __tablename__='USERS_BLACKLIST'
-    id=db.Column(db.Integer, primary_key=True)
-    user_id=db.Column(db.Integer, ForeignKey("USERS.id"), nullable=False)
-    email = db.Column(db.String(50), ForeignKey("USERS.email"), nullable=False)
-
-
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
- 
-class RegisterForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=20)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=6, max=80)])
-    email = StringField('Email', validators=[InputRequired(), Email(message="Invalid email"), Length(min = 1, max = 80)])
-    phone = StringField('Phone Number', validators=[InputRequired(), Regexp(regex = numberRegex, message = "Notice: Only input numbers" ), Length(min=9, max = 20)])
-
-def buildUpdateInfo(curr_user="", curr_email="", curr_phone=""):
-    class updateInfo(FlaskForm):
-        username = StringField('Username', default = curr_user, validators=[InputRequired(), Length(min=4, max=20)])
-        email = StringField('Email', default = curr_email, validators=[InputRequired(), Email(message="Invalid email"), Length(min=1, max = 80)])
-        phone = StringField('Phone Number', default = curr_phone, validators=[InputRequired(), Regexp(regex = numberRegex, message = "Notice: Only input numbers" ), Length(min=9, max = 20)])
-    return updateInfo()
-
-class submitItemForm(FlaskForm):
-    title = StringField('Title', validators=[InputRequired(), Length(min=4, max=20)])
-    image = StringField('Image Address', validators=[InputRequired(), Length(min=6, max=80)])
-    key_words = StringField('Key Words', validators=[InputRequired(), Length(min=2, max=80)])
-    time_limit = DateTimeField('Time Limit', validators=[InputRequired()])
-    description = StringField('Description', validators=[InputRequired(), Length(min=2, max=80)])
- 
-class complaintsForm(FlaskForm):
-    reason = StringField('Reasoning', validators=[InputRequired(), Length(min=4, max=300)])
-    
- 
-class rateForm(FlaskForm):
-    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
-    choice = RadioField('Rate', choices =[('one', 1), ('two', 2), ('three', 3), ('four', 4), ('five', 5)], validators=[InputRequired()])
-
-
-class updatePasswordForm(FlaskForm):
-    current_password = PasswordField('Current Password', validators=[InputRequired(), Length(min=6, max=80)])
-    new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=6, max=80)])
-    confirm_password = PasswordField('Confirm New Password', validators=[InputRequired(), Length(min=6, max=80)])
-
-class addCCForm(FlaskForm):
-    cc_number = StringField('Credit Card Number', validators=[InputRequired(), Regexp(regex = numberRegex, message = "Notice: Only input numbers" ), Length(min = 12, max =80)])
-
-class withdrawForm(FlaskForm):
-    withdraw = StringField('Withdraw Amount', validators=[InputRequired(), Regexp(regex = currencyInputRegex, message="Notice: Valid Input Dollar Amount: x.xx")])
-
-class depositForm(FlaskForm):
-    deposit = StringField('Deposit Amount', validators=[InputRequired(), Regexp(regex = currencyInputRegex, message="Notice: Valid Input Dollar Amount: x.xx")])
-
-class postForm(FlaskForm):
-    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
-    choice = RadioField('Approve?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
-
-class searchForm(FlaskForm):
-    search = SearchField('', validators=[InputRequired(), Length(min=1, max=500)])
-
-#function to return balance
-def returnBalance(balance):
-    a = 0
-    if balance is not None:
-        a = balance/100
-    return a
-
-class postForm1(FlaskForm):
-    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
-    choice = RadioField('Settle?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
-
-
-class postForm2(FlaskForm):
-    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
-    choice = RadioField('Approve?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
-
-class postForm3(FlaskForm):
-    body = TextAreaField('Message', default ="", validators=[Length(min=0, max=500)])
-    choice = RadioField('Remove?', choices =[('Yes', 'Yes'), ('No', 'No')], default = 'No', validators=[InputRequired()])
-
+from forms import LoginForm, RegisterForm, buildUpdateInfo, submitItemForm, complaintsForm, rateForm, updatePasswordForm, addCCForm, withdrawForm, depositForm, postForm, searchForm, postForm1, postForm2, postForm3
+from models import User, OUApp, Process_Items, Items, Transactions, Bids, Give_Rating, Complaints, Sus_Reports, Sus_Items, Police_Reports, Users_Items_Blocklist, Users_Blacklist
+from setup import returnBalance, db_run
 
 app.app_context().push()
+db_run()
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
+    
 # use python -m flask to run the app in VSCode
 @app.route("/", methods=['GET','POST'])
 def home():
     return render_template("homepage.html")
 
+@app.route("/allItems")
+def browse():
+    items = Items.query.all()
+    return render_template('browse.html', results=items)
+
 @app.route('/OUApplication', methods = ['GET', 'POST'])
 def OUApplication():
     form = RegisterForm()
-
     if form.validate_on_submit():
         new_app = OUApp(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
         db.session.add(new_app)
@@ -259,12 +61,9 @@ def login():
             flash('Invalid username or password!')
     return render_template('login.html', form = form)
 
-
-
 # @app.route('/showItems')
 # def showItems():
 #    return render_template('showItems.html', Process_Items = Process_Items.query.all() )
-
 
 @app.route('/OUcomplaint')
 def OUcomplaint():
@@ -274,9 +73,6 @@ def OUcomplaint():
 def OUitems():
    return render_template('OUitems.html', Process_Items = Process_Items.query.all() )
 
-
-
-
 @app.route("/submitItem", methods = ['GET', 'POST'])
 def submitItem():
     form = submitItemForm()
@@ -284,16 +80,14 @@ def submitItem():
     if form.validate_on_submit():
         # new_user = User(username=form.username.data, email = form.email.data, phone_number = form.phone.data, password = form.password.data, user_type = "OU")
         # db.session.add(new_user)
-            new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, seller_id=current_user.id, time_limit = form.time_limit.data, description=form.description.data)
+            starting_bid=float(form.starting_bid.data)*100
+            new_item = Process_Items(title=form.title.data, image = form.image.data, key_words = form.key_words.data, seller_id=current_user.id, time_limit = form.time_limit.data, description=form.description.data, starting_bid=starting_bid)
             # seller_id= current_user.id
             db.session.add(new_item)
             db.session.commit()
             flash('new item submitted, awaiting processing') 
             return redirect(url_for('showItems'))
     return render_template("submitItem.html", form = form)
-
-
-
 
 @app.route("/finalizeItem", methods = ['GET', 'POST'])
 @login_required
@@ -317,15 +111,13 @@ def finalizeItem(id=0):
     if form.validate_on_submit():
         if user:
             if (form.choice.data == 'Yes'):
-                user = Items(title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, highest_bid=0, description=user.description)
+                user = Items(title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, highest_bid=user.starting_bid, description=user.description)
                 db.session.add(user)
                 Process_Items.query.filter_by(id=id).delete()
                 db.session.commit()
             
             return redirect(url_for('showItems'))
     return render_template('finalizeItem.html', id = id, title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, status=user.status,description=user.description, form = form)
-
-
 
 @app.route("/finalizeUser", methods = ['GET', 'POST'])
 @login_required
@@ -355,10 +147,6 @@ def finalizeUser(id=0):
             return redirect(url_for('showUsers'))
     return render_template('finalizeUser.html', id = id, username = user.username, user_type = user.user_type,phone_number=user.phone_number,cc_number=user.cc_number, email=user.email, form = form)
 
-
-
-
-
 @app.route("/finalizeComplaint", methods = ['GET', 'POST'])
 @login_required
 def showComplaints():
@@ -387,11 +175,9 @@ def finalizeComplaint(id=0):
             return redirect(url_for('showComplaints'))
     return render_template('finalizeComplaint.html', id = id, user_id = user.user_id, complaint_cnt=user.complaint_cnt, reason = user.reason, form = form)
 
-
 # @app.route('/showComplaints')
 # def showComplaints():
 #      return render_template('showComplaints.html', Complaints = Complaints.query.all() )
-
 
 @app.route("/fileComplaint", methods = ['GET', 'POST'])
 def fileComplaint():
@@ -407,18 +193,6 @@ def fileComplaint():
         flash('Complaint submitted, awaiting settlement decision') 
         return redirect(url_for('showComplaints'))
     return render_template("fileComplaint.html", form = form)
-
-
-
- 
-# @app.route("/welcome") 
-# @login_required
-# def welcome():
-#     return render_template(
-#         "welcome.html",
-#         name=current_user.username,
-#         date=datetime.now()
-#     )
 
 @app.route("/logout")
 @login_required
@@ -439,7 +213,7 @@ def itemPage(id=0):
         item_title=display_item.title,
         seller_id=display_item.seller_id,
         end_date=display_item.time_limit,
-        highest_bid=f'${display_item.highest_bid}',
+        highest_bid=display_item.highest_bid,
         highest_bid_constraint=display_item.highest_bid+1,
         item_description=display_item.description)
 
@@ -451,14 +225,24 @@ def placeBid(id=0):
         flash('cant bid on your own item!')
         return redirect(url_for('itemPage', id = item.id))
     if request.method == "POST":
+        checkSold = Transactions.query.filter_by(item_id=item.id).first()
+        if checkSold:
+            flash('item has been sold!')
+            return redirect(url_for('itemPage', id = item.id))
        # getting input with user = fUser in HTML form
         highest_bid = item.highest_bid
         bid = int(request.form.get("fBid"))
+        if (bid > current_user.balance/100):
+            flash('you do not have enough money in your account!')
+            return redirect(url_for('itemPage', id = item.id))
+        checkBidder = Bids.query.filter(Bids.bidder_id== current_user.id, Bids.item_id == item.id).first()
+        if checkBidder:
+            checkBidder.highest_bid = bid
+        else:
+            newBid = Bids(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
+            db.session.add(newBid)  
         db.session.query(Items).filter(Items.id == id).update({'highest_bid': bid})
-        newBid = Bids(item_id = item.id, highest_bid = bid, bidder_id=current_user.id, time_stamp=curDate)
-        db.session.add(newBid)   
         db.session.commit()
-        highest_bid = item.highest_bid # for frontend, have to update the actual item and add to bids table
     allBids = Bids.query.filter(Bids.item_id==item.id).order_by(Bids.highest_bid.desc()).all()
     return render_template(
         "item.html",
@@ -468,11 +252,10 @@ def placeBid(id=0):
         seller_id=item.seller_id,
         time_left=(item.time_limit - curDate).days,
         deadline = item.time_limit.date(),
-        highest_bid=f'${item.highest_bid}',
+        highest_bid=item.highest_bid,
         highest_bid_constraint=item.highest_bid+1,
         item_description=item.description,
         allBids=allBids)
-
 
 @app.route("/report-item", methods = ['GET', 'POST'])
 def sendReport():
@@ -579,6 +362,8 @@ def updateCard():
 @app.route("/withdraw", methods = ['GET', 'POST'])
 @login_required
 def withdraw():
+    if current_user.cc_number is None:
+        return redirect(url_for('updateCard'))
     form = withdrawForm()
     user = User.query.filter_by(id=current_user.id).first()
     user_balance = returnBalance(current_user.balance)
@@ -602,6 +387,8 @@ def withdraw():
 @app.route("/deposit", methods = ['GET', 'POST'])
 @login_required
 def deposit():
+    if current_user.cc_number is None:
+        return redirect(url_for('updateCard'))
     form = depositForm()
     user = User.query.filter_by(id=current_user.id).first()
     user_balance = returnBalance(current_user.balance)
@@ -771,13 +558,23 @@ def sellItemPage(id=0):
     if (id == 0 or not item): return redirect(url_for('displayItemsOnSale'))
     allBids = Bids.query.filter(Bids.item_id==item.id).order_by(Bids.highest_bid.desc()).all()
     if request.method == 'POST':
+        checkSold = Transactions.query.filter_by(item_id=item.id).first()
+        if checkSold:
+            flash('item has been sold!')
+            return redirect(url_for('sellItemPage', id = item.id))
         now = datetime.now()
         bidder_id = request.form['bidder']
-        if (Transactions.query.filter_by(buyer_id=bidder_id).first()):
-            flash('already sold to this user')
-            return redirect(url_for('sellItemPage', id=item.id))
-        new_transaction = Transactions(item_id=item.id, buyer_id=bidder_id, seller_id=current_user.id,highest_bid=item.highest_bid)
-        db.session.add(new_transaction)
-        db.session.commit()
+        seller = User.query.filter_by(id=current_user.id).first()
+        bidder = User.query.filter_by(id=bidder_id).first()
+        getBid = Bids.query.filter(Bids.bidder_id==bidder_id, Bids.item_id==item.id).first()
+        if seller and bidder and getBid and bidder.balance >= getBid.highest_bid:
+            bidder.balance = bidder.balance - (getBid.highest_bid*100)
+            seller.balance = seller.balance + (getBid.highest_bid*100)
+            new_transaction = Transactions(item_id=item.id, buyer_id=bidder_id, seller_id=current_user.id,highest_bid=getBid.highest_bid)
+            db.session.add(new_transaction)
+            db.session.commit()
+        else:
+            flash('The user does not have enough funds on their account.')
+            return redirect(url_for('sellItemPage', id = item.id))
         return redirect(url_for('displayItemsOnSale'))
     return render_template('sellItem.html', item = item, allBids = allBids)

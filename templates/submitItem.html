@@ -22,7 +22,9 @@
             <br>
             {{ wtf.form_field(form.description) }}
             <br>
-           <center> <button class="btn btn-primary" type="submit"> Submit Item </button></center>
+            {{ wtf.form_field(form.starting_bid) }}
+            <br>
+            <button class="btn btn-primary" type="submit"> Submit Item </button>
             
         </form>
     </div>
