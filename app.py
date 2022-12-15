@@ -111,13 +111,13 @@ def finalizeItem(id=0):
     if form.validate_on_submit():
         if user:
             if (form.choice.data == 'Yes'):
-                user = Items(title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, highest_bid=user.starting_bid, description=user.description)
+                user = Items(title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, highest_bid=int(round(float(user.starting_bid)/100)), description=user.description)
                 db.session.add(user)
                 Process_Items.query.filter_by(id=id).delete()
                 db.session.commit()
             
             return redirect(url_for('showItems'))
-    return render_template('finalizeItem.html', id = id, title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, status=user.status,description=user.description, form = form)
+    return render_template('finalizeItem.html', id = id, title = user.title, image = user.image,key_words=user.key_words, seller_id=user.seller_id, time_limit=user.time_limit, status=user.status,description=user.description,starting_bid = user.starting_bid, form = form)
 
 @app.route("/finalizeUser", methods = ['GET', 'POST'])
 @login_required
@@ -203,8 +203,8 @@ def logout():
 @app.route("/item/<id>", methods = ['GET','POST'])
 def itemPage(id=0):
     display_item = Items.query.filter_by(id=id).first()
-    allBids = Bids.query.filter(Bids.item_id==display_item.id).order_by(Bids.highest_bid.desc()).all()
     if (id == 0 or not display_item): return 'item not found!'
+    allBids = Bids.query.filter(Bids.item_id==display_item.id).order_by(Bids.highest_bid.desc()).all()
     return render_template(
         "item.html",
         item_id=display_item.id,

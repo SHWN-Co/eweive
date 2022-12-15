@@ -24,6 +24,7 @@
             <td>{{ item.time_limit }} </td>
             <td>{{ item.status }} </td>
             <td>{{ item.description }} </td>
+            <td>{{ '$%.2f' % (item.starting_bid/100) }}</td>
             <td>
                 <form action = "{{ url_for('showItems') }}" method = "POST">
                     <input id="item_container" name ="item_container" type="hidden" value="{{ item.id }}">
